@@ -51,32 +51,36 @@ class BaseLevelClass:
         self.wallpapers = wallpapers
         self.fon_music = fon_music
         self.objs_on_level = objs_on_level
-        self.num_of_screen = 1
+        self.num_of_screen = 0
         self.display = display
         self.x = {"спрайты": [['class', 0]]}
+        self.start_background_music()
 
-    def draw_level(self, *args):
+    def start_background_music(self):
+        fullname = os.path.join('Music', self.fon_music[0])
+        pygame.mixer.music.load(fullname)
+        pygame.mixer.music.play(-1)
+
+    def draw_level(self):
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
-        background_rect = image.get_rect()
-        self.display.blit(image, background_rect)
+        image1 = pygame.transform.scale(image, (1920, 1080))
+        background_rect = image1.get_rect()
+        self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
             if self.objs_on_level[i][1] == self.num_of_screen:
                 self.all_sprites.add(self.objs_on_level[i][0])
         self.all_sprites.draw(self.display)
-        # self.all_sprites.update(event)
 
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 800, 400
-    screen = pygame.display.set_mode(size)
+    screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 
     clock = pygame.time.Clock()
     spite1 = Sprite(['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png', 'player_fall.png'],
-                    50, 50, 'hey.wav')
-    x = BaseLevelClass([r'C:\Users\anzel\OneDrive\Рабочий стол\pygame\Images\фон.jpg',
-                        r'C:\Users\anzel\OneDrive\Рабочий стол\pygame\Images\фон2.jpg'], [], {'спрайты': [spite1, 1]},
+                    150, 100, 'hey.wav')
+    x = BaseLevelClass(['главный_фон.png'], ['main_music.mp3'], {},
                        screen)
     x.draw_level()
 
