@@ -1,7 +1,6 @@
 import os
 import sys
 import pygame
-import time
 
 
 class Button:
@@ -11,7 +10,6 @@ class Button:
         self.width, self.height = self.image.get_width(), self.image.get_height()
         self.draw_button(surface)
         self.function = function
-        self.time = time.time()
 
     def draw_button(self, surface):
         image_rect = self.image.get_rect(
@@ -20,21 +18,17 @@ class Button:
                          (self.x, self.y, self.width, self.height))
         surface.blit(self.image, image_rect)
 
-    def pressed(self, mouse, screen=1):
-        # прохожу по всем кнопкам в списке(далее попробую сделать множество)
-        # проверяю кнопки по координате, и по расположению на экране
-        # там где button_sound - должен быть звук
+    def pressed(self, mouse):
         if mouse[0] >= self.x:
             if mouse[1] >= self.y:
                 if mouse[0] <= self.x + self.width:
                     if mouse[1] <= self.y + self.height:
-                            if time.time() - self.time > 0.3:
-                                self.function()
-                                return True
-        return False
+                            self.function()
 
 
-class AnimatedButton(pygame.sprite.Sprite, Button):
+
+
+class AnimatedButton(pygame.sprite.Sprite):
     def __init__(self, images, x, y, function, sound=None):
         super().__init__()
         self.images = images
@@ -43,10 +37,9 @@ class AnimatedButton(pygame.sprite.Sprite, Button):
         self.rect.x = x
         self.rect.y = y
         self.sound = sound
-        self.img_count = 0
+        self.img_count = 1
         self.animation = False
         self.function = function
-        self.time = time.time()
         self.need_to_update = True
 
     def load_image(self, name):
@@ -63,10 +56,9 @@ class AnimatedButton(pygame.sprite.Sprite, Button):
         if len(self.images) != 0:
             if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                     self.rect.collidepoint(args[0].pos):
-                if self.need_to_update:
-                    self.pressed(args[0].pos)
-                    self.need_to_update = False
+
                 if self.sound and not self.animation:
+                    self.pressed(args[0].pos)
                     fullname = os.path.join('Music', self.sound)
                     pygame.mixer.music.load(fullname)
                     pygame.mixer.music.play()
@@ -78,7 +70,6 @@ class AnimatedButton(pygame.sprite.Sprite, Button):
                 if self.img_count == len(self.images) ** 2:
                     self.img_count = 0
                     self.image = self.load_image(self.images[0])
-                    self.need_to_update = True
                     self.animation = False
 
     def pressed(self, mouse):
@@ -86,9 +77,7 @@ class AnimatedButton(pygame.sprite.Sprite, Button):
             if mouse[1] >= self.rect.y:
                 if mouse[0] <= self.rect.x + self.rect.width:
                     if mouse[1] <= self.rect.y + self.rect.height:
-                        if time.time() - self.time > 0.3:
-                                self.function()
-        return False
+                            self.function()
 
 
 if __name__ == '__main__':
@@ -96,7 +85,6 @@ if __name__ == '__main__':
     size = width, height = 800, 400
     screen = pygame.display.set_mode(size)
     all_sprites = pygame.sprite.Group()
-    clock = pygame.time.Clock()
     c_sprite = {
         'images': ['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png',
                    'player_fall.png'],
@@ -110,7 +98,7 @@ if __name__ == '__main__':
                 'image_name': 'button.png',
                 'x': 0,
                 'y': 0,
-                'screen': 2}
+                'screen': 0}
 
     spite1 = AnimatedButton(**c_sprite)
     print(isinstance(spite1, Button))

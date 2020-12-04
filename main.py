@@ -57,22 +57,27 @@ class BaseLevelClass:
 
     def draw_level(self, *args):
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
-
+        self.on_display = pygame.sprite.Group()
         image = pygame.image.load(background)
         background_rect = image.get_rect()
         self.display.blit(image, background_rect)
-        for i in self.objs_on_level:
-            if self.objs_on_level[i][1] == self.num_of_screen:
-                self.all_sprites.add(self.objs_on_level[i][0])
-        self.all_sprites.draw(self.display)
-        # self.all_sprites.update(event)
+        for key in self.objs_on_level:
+            for obj in self.objs_on_level[key]:
+                if obj[1] == self.num_of_screen:
+                    self.on_display.add(obj[0])
+                    self.all_sprites.add(obj[0])
+        self.on_display.draw(self.display)
 
     def next_screen(self):
-        self.num_of_screen = (self.num_of_screen + 1) % self.wallpapers
+        self.num_of_screen = (self.num_of_screen + 1) % len(self.wallpapers)
 
 
-def test():
+def test1():
     print(123)
+
+
+def test2():
+    print(456)
 
 
 if __name__ == '__main__':
@@ -81,39 +86,46 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
 
     clock = pygame.time.Clock()
-    spite1 = Sprite(['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png',
-                     'player_fall.png'],
-                    50, 50, 'hey.wav')
-    c = {
+
+    c1 = {
         'images': ['player_idle.png', 'player_cheer1.png', 'player_cheer2.png',
                    'player_hang.png',
                    'player_fall.png'],
         'x': 200,
         'y': 200,
         'sound': 'hey.wav',
-        'function': test
+        'function': test1
     }
-    ani_button = AnimatedButton(**c)
+    c2 = {
+        'images': ['player_idle.png', 'player_cheer1.png', 'player_cheer2.png',
+                   'player_hang.png',
+                   'player_fall.png'],
+        'x': 100,
+        'y': 100,
+        'sound': 'hey.wav',
+        'function': test2
+    }
 
-    x = BaseLevelClass(['фон2.jpg', 'фон.jpg'], [], {'спрайты': [ani_button, 0]},
+    ani_button_1 = AnimatedButton(**c1)
+    ani_button_2 = AnimatedButton(**c2)
+
+    x = BaseLevelClass(['фон2.jpg', 'главный_фон.png'], [],
+                       {'спрайты': [[ani_button_1, 0], [ani_button_1, 1]]},
                        screen)
+    ani_button_1.function = x.next_screen
+    ani_button_2.function = x.next_screen
 
     x.draw_level()
-
     running = True
     while running:
-        # внутри игрового цикла ещё один цикл
-        # приема и обработки сообщений
-
         for event in pygame.event.get():
-            # при закрытии окна
             if event.type == pygame.QUIT:
                 running = False
 
-
         x.draw_level()
-        x.all_sprites.update(event)
+        x.on_display.update(event)
 
         pygame.display.flip()
-        clock.tick(55)
+        clock.tick(100)
+
     pygame.quit()
