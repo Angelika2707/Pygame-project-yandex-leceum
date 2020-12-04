@@ -1,10 +1,10 @@
 import os
 import sys
 import pygame
+from AnimatedButtons import Button, AnimatedButton
 
 
 class Sprite(pygame.sprite.Sprite):
-
     def __init__(self, images, x, y, sound=None):
         super().__init__()
         self.images = images
@@ -36,13 +36,13 @@ class Sprite(pygame.sprite.Sprite):
                     pygame.mixer.music.play()
                 self.animation = True
 
-            if self.animation:
-                self.image = self.load_image(self.images[self.img_count // len(self.images)])
-                self.img_count += 1
-                if self.img_count == len(self.images) ** 2:
-                    self.img_count = 0
-                    self.image = self.load_image(self.images[0])
-                    self.animation = False
+                if self.animation:
+                    self.image = self.load_image(self.images[self.img_count // len(self.images)])
+                    self.img_count += 1
+                    if self.img_count == len(self.images) ** 2:
+                        self.img_count = 0
+                        self.image = self.load_image(self.images[0])
+                        self.animation = False
 
 
 class BaseLevelClass:
@@ -51,12 +51,13 @@ class BaseLevelClass:
         self.wallpapers = wallpapers
         self.fon_music = fon_music
         self.objs_on_level = objs_on_level
-        self.num_of_screen = 1
+        self.num_of_screen = 0
         self.display = display
         self.x = {"спрайты": [['class', 0]]}
 
     def draw_level(self, *args):
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
+
         image = pygame.image.load(background)
         background_rect = image.get_rect()
         self.display.blit(image, background_rect)
@@ -66,6 +67,13 @@ class BaseLevelClass:
         self.all_sprites.draw(self.display)
         # self.all_sprites.update(event)
 
+    def next_screen(self):
+        self.num_of_screen = (self.num_of_screen + 1) % self.wallpapers
+
+
+def test():
+    print(123)
+
 
 if __name__ == '__main__':
     pygame.init()
@@ -73,11 +81,23 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
 
     clock = pygame.time.Clock()
-    spite1 = Sprite(['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png', 'player_fall.png'],
+    spite1 = Sprite(['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png',
+                     'player_fall.png'],
                     50, 50, 'hey.wav')
-    x = BaseLevelClass([r'C:\Users\anzel\OneDrive\Рабочий стол\pygame\Images\фон.jpg',
-                        r'C:\Users\anzel\OneDrive\Рабочий стол\pygame\Images\фон2.jpg'], [], {'спрайты': [spite1, 1]},
+    c = {
+        'images': ['player_idle.png', 'player_cheer1.png', 'player_cheer2.png',
+                   'player_hang.png',
+                   'player_fall.png'],
+        'x': 200,
+        'y': 200,
+        'sound': 'hey.wav',
+        'function': test
+    }
+    ani_button = AnimatedButton(**c)
+
+    x = BaseLevelClass(['фон2.jpg', 'фон.jpg'], [], {'спрайты': [ani_button, 0]},
                        screen)
+
     x.draw_level()
 
     running = True
@@ -89,9 +109,9 @@ if __name__ == '__main__':
             # при закрытии окна
             if event.type == pygame.QUIT:
                 running = False
-        x.draw_level()
 
-        # x.all_sprites.draw(screen)
+
+        x.draw_level()
         x.all_sprites.update(event)
 
         pygame.display.flip()
