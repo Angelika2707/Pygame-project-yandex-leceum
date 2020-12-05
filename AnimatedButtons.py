@@ -5,8 +5,8 @@ from Buttons import Button
 
 
 class AnimatedButton(pygame.sprite.Sprite):
-    def __init__(self, group, images, x, y, screen, sound=None):
-        super().__init__(group)
+    def __init__(self, images, x, y, screen, sound=None):
+        super().__init__()
         self.images = images
         self.image = self.load_image(self.images[0])
         self.rect = self.image.get_rect()
