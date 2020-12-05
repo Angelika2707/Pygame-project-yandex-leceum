@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame
+from AnimatedButtons import AnimatedButton
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -53,13 +54,12 @@ class BaseLevelClass:
         self.objs_on_level = objs_on_level
         self.num_of_screen = 0
         self.display = display
-        self.x = {"спрайты": [['class', 0]]}
         self.start_background_music()
 
     def start_background_music(self):
         fullname = os.path.join('Music', self.fon_music[0])
-        pygame.mixer.music.load(fullname)
-        pygame.mixer.music.play(-1)
+        mus = pygame.mixer.Sound(fullname)
+        mus.play(-1)
 
     def draw_level(self):
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
@@ -68,9 +68,14 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            if self.objs_on_level[i][1] == self.num_of_screen:
-                self.all_sprites.add(self.objs_on_level[i][0])
+            for j in self.objs_on_level[i]:
+                if j[1] == self.num_of_screen:
+                    self.all_sprites.add(j[0])
         self.all_sprites.draw(self.display)
+
+
+def delete():
+    print('start')
 
 
 if __name__ == '__main__':
@@ -78,9 +83,9 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 
     clock = pygame.time.Clock()
-    spite1 = Sprite(['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png', 'player_fall.png'],
-                    150, 100, 'hey.wav')
-    x = BaseLevelClass(['главный_фон.png'], ['main_music.mp3'], {},
+    spite1 = AnimatedButton(['старт.png', 'старт.png'],
+                            280, 650, delete, 'button_sound.ogg')
+    x = BaseLevelClass(['главной_фон2.png'], ['main_music3.ogg'], {'кнопки': [[spite1, 0]]},
                        screen)
     x.draw_level()
 
