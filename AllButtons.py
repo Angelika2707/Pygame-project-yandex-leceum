@@ -1,7 +1,6 @@
+import pygame
 import os
 import sys
-import pygame
-
 
 class Button:
     def __init__(self, surface, image_name, x, y, function):
@@ -76,46 +75,3 @@ class AnimatedButton(pygame.sprite.Sprite):
                 if mouse[0] <= self.rect.x + self.rect.width:
                     if mouse[1] <= self.rect.y + self.rect.height:
                         self.function()
-
-
-if __name__ == '__main__':
-    pygame.init()
-    size = width, height = 800, 400
-    screen = pygame.display.set_mode(size)
-    all_sprites = pygame.sprite.Group()
-    c_sprite = {
-        'images': ['player_idle.png', 'player_cheer1.png', 'player_cheer2.png', 'player_hang.png',
-                   'player_fall.png'],
-        'x': 200,
-        'y': 200,
-        'screen': 1,
-        'sound': 'hey.wav'
-
-    }
-    c_button = {'surface': screen,
-                'image_name': 'button.png',
-                'x': 0,
-                'y': 0,
-                'screen': 0}
-
-    spite1 = AnimatedButton(**c_sprite)
-    print(isinstance(spite1, Button))
-    pygame.display.flip()
-    running = True
-    while running:
-        # внутри игрового цикла ещё один цикл
-        # приема и обработки сообщений
-        for event in pygame.event.get():
-            # при закрытии окна
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = event.pos
-                spite1.pressed(pos, 1)
-
-        screen.fill((255, 255, 255))
-        all_sprites.draw(screen)
-        all_sprites.update(event)
-        pygame.display.flip()
-        clock.tick(55)
-    pygame.quit()

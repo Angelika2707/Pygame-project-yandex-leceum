@@ -1,48 +1,7 @@
 import os
 import sys
 import pygame
-from AnimatedButtons import Button, AnimatedButton
-
-
-class Sprite(pygame.sprite.Sprite):
-    def __init__(self, images, x, y, sound=None):
-        super().__init__()
-        self.images = images
-        self.image = self.load_image(self.images[0])
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.sound = sound
-        self.img_count = 1
-        self.animation = False
-
-    def load_image(self, name):
-        # удалить на релизе
-        fullname = os.path.join('Images', name)
-        if not os.path.isfile(fullname):
-            print(f"Файл с изображением '{fullname}' не найден")
-            sys.exit()
-        #  выше блок кода
-        image = pygame.image.load(fullname)
-        return image
-
-    def update(self, *args):
-        if len(self.images) != 1:
-            if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-                    self.rect.collidepoint(args[0].pos):
-                if self.sound and not self.animation:
-                    fullname = os.path.join('Music', self.sound)
-                    pygame.mixer.music.load(fullname)
-                    pygame.mixer.music.play()
-                self.animation = True
-
-                if self.animation:
-                    self.image = self.load_image(self.images[self.img_count // len(self.images)])
-                    self.img_count += 1
-                    if self.img_count == len(self.images) ** 2:
-                        self.img_count = 0
-                        self.image = self.load_image(self.images[0])
-                        self.animation = False
+from AllButtons import *
 
 
 class BaseLevelClass:
@@ -72,12 +31,8 @@ class BaseLevelClass:
         self.num_of_screen = (self.num_of_screen + 1) % len(self.wallpapers)
 
 
-def test1():
+def test():
     print(123)
-
-
-def test2():
-    print(456)
 
 
 if __name__ == '__main__':
@@ -94,7 +49,7 @@ if __name__ == '__main__':
         'x': 200,
         'y': 200,
         'sound': 'hey.wav',
-        'function': test1
+        'function': test
     }
     c2 = {
         'images': ['player_idle.png', 'player_cheer1.png', 'player_cheer2.png',
@@ -103,7 +58,7 @@ if __name__ == '__main__':
         'x': 100,
         'y': 100,
         'sound': 'hey.wav',
-        'function': test2
+        'function': test
     }
 
     ani_button_1 = AnimatedButton(**c1)
