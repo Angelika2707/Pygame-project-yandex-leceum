@@ -1,5 +1,6 @@
 import pygame
 import os
+import sys
 
 class Button:
     def __init__(self, surface, image_name, x, y, function):
