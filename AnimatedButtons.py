@@ -23,9 +23,7 @@ class Button:
             if mouse[1] >= self.y:
                 if mouse[0] <= self.x + self.width:
                     if mouse[1] <= self.y + self.height:
-                            self.function()
-
-
+                        self.function()
 
 
 class AnimatedButton(pygame.sprite.Sprite):
@@ -77,7 +75,7 @@ class AnimatedButton(pygame.sprite.Sprite):
             if mouse[1] >= self.rect.y:
                 if mouse[0] <= self.rect.x + self.rect.width:
                     if mouse[1] <= self.rect.y + self.rect.height:
-                            self.function()
+                        self.function()
 
 
 if __name__ == '__main__':
