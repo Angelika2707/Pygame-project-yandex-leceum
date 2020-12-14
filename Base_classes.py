@@ -1,7 +1,6 @@
 import os
 import sys
 import pygame
-from AnimatedButtons import AnimatedButton
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -83,7 +82,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 
     clock = pygame.time.Clock()
-    spite1 = AnimatedButton(['старт.png', 'старт.png'],
+    spite1 = AnimatedButton(['image.png', 'image.png'],
                             280, 650, delete, 'button_sound.ogg')
     x = BaseLevelClass(['главной_фон2.png'], ['main_music3.ogg'], {'кнопки': [[spite1, 0]]},
                        screen)
