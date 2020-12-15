@@ -10,7 +10,7 @@ if __name__ == '__main__':
                             490, 560, print, 'button_sound.ogg')
     spite2 = AnimatedButton(['settings.png', 'settings.png'],
                             490, 650, print, 'button_sound.ogg')
-    spite4 = AnimatedButton(['exit.png', 'exit.png'],
+    spite4 = AnimatedButton(['exit.png', 'exit2.png'],
                             542, 712, exit, 'button_sound.ogg')
     spite3 = Sprite(['main_name.png'],
                     350, 150, 'button_sound.ogg')
