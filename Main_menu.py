@@ -3,12 +3,12 @@ from AllClasses import BaseLevelClass, AnimatedButton, Sprite
 
 if __name__ == '__main__':
     pygame.init()
-    screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((1920, 1080))
 
     clock = pygame.time.Clock()
-    spite1 = AnimatedButton(['start.png', 'start.png'],
+    spite1 = AnimatedButton(['start.png', 'start2.png'],
                             490, 560, print, 'button_sound.ogg')
-    spite2 = AnimatedButton(['settings.png', 'settings.png'],
+    spite2 = AnimatedButton(['settings.png', 'settings2.png'],
                             490, 650, print, 'button_sound.ogg')
     spite4 = AnimatedButton(['exit.png', 'exit2.png'],
                             542, 712, exit, 'button_sound.ogg')
