@@ -126,6 +126,6 @@ if __name__ == '__main__':
         x.on_display.update(event)
 
         pygame.display.flip()
-        clock.tick(100)
+        clock.tick(60)
 
     pygame.quit()
