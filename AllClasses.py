@@ -69,7 +69,7 @@ class AnimatedButton(pygame.sprite.Sprite):
                 self.img_count += 1
                 if self.img_count == len(self.images) ** 2:
                     self.img_count = 0
-                    self.image = self.load_image(self.images[0])
+                    self.image = self.load_image(self.images[-1])
                     self.animation = False
 
     def pressed(self, mouse):
