@@ -1,7 +1,7 @@
 import os
 import sys
 import pygame
-from AllButtons import *
+from AllClasses import *
 
 
 class BaseLevelClass:
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     ani_button_1 = AnimatedButton(**c1)
     ani_button_2 = AnimatedButton(**c2)
 
-    x = BaseLevelClass(['фон2.jpg', 'главный_фон.png'], [],
+    x = BaseLevelClass(['фон2.jpg', 'главной_фон2.png'], [],
                        {'спрайты': [[ani_button_1, 0], [ani_button_1, 1]]},
                        screen)
     ani_button_1.function = x.next_screen

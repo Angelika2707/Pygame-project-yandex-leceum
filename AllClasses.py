@@ -27,7 +27,7 @@ class Button:
 
 
 class AnimatedButton(pygame.sprite.Sprite):
-    def __init__(self, images, x, y, function, sound=None):
+    def __init__(self, images, x, y, function, sound=None, go_to=False, level=0):
         super().__init__()
         self.images = images
         self.image = self.load_image(self.images[0])
@@ -35,10 +35,12 @@ class AnimatedButton(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.sound = sound
-        self.img_count = 1
+        self.img_count = 0
         self.animation = False
         self.function = function
         self.need_to_update = True
+        self.go_to = go_to
+        self.level = level
 
     def load_image(self, name):
         # удалить на релизе
@@ -75,7 +77,10 @@ class AnimatedButton(pygame.sprite.Sprite):
             if mouse[1] >= self.rect.y:
                 if mouse[0] <= self.rect.x + self.rect.width:
                     if mouse[1] <= self.rect.y + self.rect.height:
-                        self.function()
+                        if self.go_to:
+                            self.function(self.level)
+                        else:
+                            self.function()
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -129,6 +134,7 @@ class BaseLevelClass:
         self.num_of_screen = 0
         self.display = display
         self.start_background_music()
+        self.n = 1
 
     def start_background_music(self):
         fullname = os.path.join('Music', self.fon_music[0])
@@ -136,6 +142,7 @@ class BaseLevelClass:
         mus.play(-1)
 
     def draw_level(self):
+        self.all_sprites = pygame.sprite.Group()
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
         image1 = pygame.transform.scale(image, (1920, 1080))
@@ -146,3 +153,6 @@ class BaseLevelClass:
                 if j[1] == self.num_of_screen:
                     self.all_sprites.add(j[0])
         self.all_sprites.draw(self.display)
+
+    def next_screen(self, level):
+        self.num_of_screen = level
