@@ -93,7 +93,7 @@ class Sprite(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.sound = sound
-        self.img_count = 1
+        self.img_count = 0
         self.animation = False
 
     def load_image(self, name):
@@ -156,3 +156,35 @@ class BaseLevelClass:
 
     def next_screen(self, level):
         self.num_of_screen = level
+
+
+class SwitchButton(AnimatedButton):
+    def __init__(self, images, x, y, function, sound=None):
+        super().__init__(images, x, y, function, sound=None)
+        self.img_count = 0
+        self.image = self.load_image(self.images[self.img_count])
+        self.sound = sound
+
+    def update(self, *args):
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            self.pressed(args[0].pos)
+            if self.sound:
+                fullname = os.path.join('Music', self.sound)
+                pygame.mixer.music.load(fullname)
+                pygame.mixer.music.play()
+
+    def pressed(self, mouse):
+        if mouse[0] >= self.rect.x:
+            if mouse[1] >= self.rect.y:
+                if mouse[0] <= self.rect.x + self.rect.width:
+                    if mouse[1] <= self.rect.y + self.rect.height:
+                        if self.go_to:
+                            self.function(self.level)
+                        else:
+                            self.function()
+                        if self.img_count == 0:
+                            self.img_count = 1
+                        else:
+                            self.img_count = 0
+                        self.image = self.load_image(self.images[self.img_count])
