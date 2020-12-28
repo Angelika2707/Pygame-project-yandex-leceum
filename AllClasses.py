@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+import time
 
 
 class Button:
@@ -41,6 +42,7 @@ class AnimatedButton(pygame.sprite.Sprite):
         self.need_to_update = True
         self.go_to = go_to
         self.level = level
+        self.stop_mus = False
 
     def load_image(self, name):
         # удалить на релизе
@@ -53,10 +55,11 @@ class AnimatedButton(pygame.sprite.Sprite):
         return image
 
     def update(self, *args):
+
         if len(self.images) != 0:
             if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                     self.rect.collidepoint(args[0].pos):
-
+                time.sleep(0.2)
                 if self.sound and not self.animation:
                     self.pressed(args[0].pos)
                     fullname = os.path.join('Music', self.sound)
