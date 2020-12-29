@@ -6,15 +6,27 @@ def stop_music():
     global sound_music
     if sound_music:
         pygame.mixer.pause()
+        # pygame.mixer.music.set_volume(0)
         sound_music = False
     else:
         pygame.mixer.unpause()
         sound_music = True
 
 
+def stop_sound():
+    global sound_sound
+    if sound_sound:
+        pygame.mixer.music.set_volume(0)
+        sound_sound = False
+    else:
+        pygame.mixer.music.set_volume(1.0)
+        sound_sound = True
+
+
 if __name__ == '__main__':
     pygame.init()
     sound_music = True
+    sound_sound = True
     screen = pygame.display.set_mode((1920, 1080))
 
     clock = pygame.time.Clock()
@@ -55,14 +67,15 @@ if __name__ == '__main__':
     spite11.function = x.next_screen
     spite12.function = x.next_screen
     spite10.function = stop_music
+    spite9.function = stop_sound
 
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            x.all_sprites.update(event)
         x.draw_level()
-        x.all_sprites.update(event)
         pygame.display.flip()
         clock.tick(55)
     pygame.quit()

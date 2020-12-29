@@ -42,7 +42,6 @@ class AnimatedButton(pygame.sprite.Sprite):
         self.need_to_update = True
         self.go_to = go_to
         self.level = level
-        self.stop_mus = False
 
     def load_image(self, name):
         # удалить на релизе
@@ -55,25 +54,22 @@ class AnimatedButton(pygame.sprite.Sprite):
         return image
 
     def update(self, *args):
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            self.pressed(args[0].pos)
+            if self.sound and not self.animation:
+                fullname = os.path.join('Music', self.sound)
+                pygame.mixer.music.load(fullname)
+                pygame.mixer.music.play()
+            self.animation = True
 
-        if len(self.images) != 0:
-            if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-                    self.rect.collidepoint(args[0].pos):
-                time.sleep(0.2)
-                if self.sound and not self.animation:
-                    self.pressed(args[0].pos)
-                    fullname = os.path.join('Music', self.sound)
-                    pygame.mixer.music.load(fullname)
-                    pygame.mixer.music.play()
-                self.animation = True
-
-            if self.animation:
-                self.image = self.load_image(self.images[self.img_count // len(self.images)])
-                self.img_count += 1
-                if self.img_count == len(self.images) ** 2:
-                    self.img_count = 0
-                    self.image = self.load_image(self.images[-1])
-                    self.animation = False
+        if self.animation:
+            self.image = self.load_image(self.images[self.img_count // len(self.images)])
+            self.img_count += 1
+            if self.img_count == len(self.images) ** 2:
+                self.img_count = 0
+                self.image = self.load_image(self.images[-1])
+                self.animation = False
 
     def pressed(self, mouse):
         if mouse[0] >= self.rect.x:
@@ -87,7 +83,6 @@ class AnimatedButton(pygame.sprite.Sprite):
 
 
 class Sprite(pygame.sprite.Sprite):
-
     def __init__(self, images, x, y, sound=None):
         super().__init__()
         self.images = images
@@ -172,10 +167,15 @@ class SwitchButton(AnimatedButton):
         if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                 self.rect.collidepoint(args[0].pos):
             self.pressed(args[0].pos)
-            if self.sound:
+            if self.sound and not self.animation:
                 fullname = os.path.join('Music', self.sound)
                 pygame.mixer.music.load(fullname)
                 pygame.mixer.music.play()
+            if self.img_count == 0:
+                self.img_count = 1
+            else:
+                self.img_count = 0
+            self.image = self.load_image(self.images[self.img_count])
 
     def pressed(self, mouse):
         if mouse[0] >= self.rect.x:
@@ -186,8 +186,3 @@ class SwitchButton(AnimatedButton):
                             self.function(self.level)
                         else:
                             self.function()
-                        if self.img_count == 0:
-                            self.img_count = 1
-                        else:
-                            self.img_count = 0
-                        self.image = self.load_image(self.images[self.img_count])
