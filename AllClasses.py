@@ -124,7 +124,7 @@ class Sprite(pygame.sprite.Sprite):
 
 
 class BaseLevelClass:
-    def __init__(self, wallpapers, fon_music, objs_on_level, display):
+    def __init__(self, wallpapers, fon_music, objs_on_level, display, transform=False):
         self.all_sprites = pygame.sprite.Group()
         self.wallpapers = wallpapers
         self.fon_music = fon_music
@@ -133,6 +133,7 @@ class BaseLevelClass:
         self.display = display
         self.start_background_music()
         self.n = 1
+        self.transform = transform
 
     def start_background_music(self):
         fullname = os.path.join('Music', self.fon_music[0])
@@ -143,7 +144,10 @@ class BaseLevelClass:
         self.all_sprites = pygame.sprite.Group()
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
-        image1 = pygame.transform.scale(image, (1920, 1080))
+        if self.transform:
+            image1 = pygame.transform.scale(image, (1920, 1080))
+        else:
+            image1 = image
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:

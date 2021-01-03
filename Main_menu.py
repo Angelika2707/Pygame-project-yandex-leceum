@@ -60,7 +60,7 @@ if __name__ == '__main__':
                        {'кнопки': [[spite1, 0], [spite2, 0], [spite4, 0], [spite9, 1], [spite10, 1], [spite11, 1],
                                    [spite12, 2]],
                         'спрайты': [[spite3, 0], [spite5, 1], [spite6, 1], [spite7, 1], [spite8, 1], [spite13, 2]]},
-                       screen)
+                       screen, True)
     x.draw_level()
     spite2.function = x.next_screen
     spite6.function = x.next_screen

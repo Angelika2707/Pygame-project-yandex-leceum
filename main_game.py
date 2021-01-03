@@ -9,9 +9,13 @@ if __name__ == '__main__':
     running = True
     fps = 60
     clock = pygame.time.Clock()
-    spite1 = Sprite(['mrs_pigion.png'],
-                        280, 650, 'button_sound.ogg')
-    x = BaseLevelClass(['главной_фон2.png'], ['main_music3.ogg'], {'кнопки': [[spite1, 0]]},
+    spite1 = Sprite(['vol2.png'],
+                        470, 550, 'button_sound.ogg')
+    spite3 = Sprite(['mr_deer3.png'],
+                    650, 520, 'button_sound.ogg')
+    spite2 = Sprite(['mrs_pigion.png'],
+                    1100, 620, 'button_sound.ogg')
+    x = BaseLevelClass(['start_level_1.png'], ['main_music3.ogg'], {'кнопки': [[spite1, 0], [spite2, 0], [spite3, 0]]},
                        screen)
     x.draw_level()
     while running:
