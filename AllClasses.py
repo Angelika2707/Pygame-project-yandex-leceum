@@ -105,15 +105,13 @@ class Sprite(pygame.sprite.Sprite):
         return image
 
     def update(self, *args):
-        if len(self.images) != 1:
-            if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-                    self.rect.collidepoint(args[0].pos):
-                if self.sound and not self.animation:
-                    fullname = os.path.join('Music', self.sound)
-                    pygame.mixer.music.load(fullname)
-                    pygame.mixer.music.play()
-                self.animation = True
-
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            fullname = os.path.join('Music', self.sound)
+            pygame.mixer.music.load(fullname)
+            pygame.mixer.music.play()
+            self.animation = True
+        if len(self.images) > 1:
             if self.animation:
                 self.image = self.load_image(self.images[self.img_count // len(self.images)])
                 self.img_count += 1

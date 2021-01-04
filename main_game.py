@@ -10,12 +10,12 @@ if __name__ == '__main__':
     fps = 60
     clock = pygame.time.Clock()
     spite1 = Sprite(['vol2.png'],
-                        470, 550, 'button_sound.ogg')
+                        470, 550, 'rabbit_sound.mp3')
     spite3 = Sprite(['mr_deer3.png'],
-                    650, 520, 'button_sound.ogg')
+                    650, 520, 'deer_roar.wav')
     spite2 = Sprite(['mrs_pigion.png'],
-                    1100, 620, 'button_sound.ogg')
-    x = BaseLevelClass(['start_level_1.png'], ['main_music3.ogg'], {'кнопки': [[spite1, 0], [spite2, 0], [spite3, 0]]},
+                    1100, 620, 'pigion_sound.wav')
+    x = BaseLevelClass(['start_level_1.png'], ['piano_fon.mp3'], {'кнопки': [[spite1, 0], [spite2, 0], [spite3, 0]]},
                        screen)
     x.draw_level()
     while running:
