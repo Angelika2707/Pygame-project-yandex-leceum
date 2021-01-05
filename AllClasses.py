@@ -107,9 +107,10 @@ class Sprite(pygame.sprite.Sprite):
     def update(self, *args):
         if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                 self.rect.collidepoint(args[0].pos):
-            fullname = os.path.join('Music', self.sound)
-            pygame.mixer.music.load(fullname)
-            pygame.mixer.music.play()
+            if self.sound != None:
+                fullname = os.path.join('Music', self.sound)
+                pygame.mixer.music.load(fullname)
+                pygame.mixer.music.play()
             self.animation = True
         if len(self.images) > 1:
             if self.animation:
@@ -149,16 +150,18 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            for j in self.objs_on_level[i]:
-                if j[1] == self.num_of_screen:
-                    self.all_sprites.add(j[0])
+            if i[1] == self.num_of_screen:
+                self.all_sprites.add(i[0])
         self.all_sprites.draw(self.display)
 
     def next_screen(self, level):
         self.num_of_screen = level
 
-    def change_screen(self, ind, num_of_scr):
-        self.objs_on_level[ind][1] = num_of_scr
+    def change_screen_on(self, ind):
+        self.objs_on_level[ind][1] = self.num_of_screen
+
+    def change_screen_off(self, ind):
+        self.objs_on_level[ind][1] = -1
 
 
 class SwitchButton(AnimatedButton):
@@ -194,8 +197,27 @@ class SwitchButton(AnimatedButton):
 
 
 class DialogSprite(Sprite):
-    def __init__(self, images, x, y):
+    def __init__(self, images, x, y, function, sprite, ind=-1):
         super().__init__(images, x, y)
+        self.i = 0
+        self.images = images
+        self.image = self.load_image(self.images[0])
+        self.rect.x = x
+        self.rect.y = y
+        self.sprite = sprite
+        self.function = function
+        self.ind = ind
+        self.can = False
 
     def update(self, *args):
-        pass
+        self.i += 1
+        if args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.sprite.rect.collidepoint(args[0].pos):
+            self.can = True
+            self.i = 0
+            print(1)
+        if self.can:
+            if self.i > 40:
+                self.can = False
+                self.function(self.ind)
+                self.i = 0

@@ -6,7 +6,6 @@ def stop_music():
     global sound_music
     if sound_music:
         pygame.mixer.pause()
-        # pygame.mixer.music.set_volume(0)
         sound_music = False
     else:
         pygame.mixer.unpause()
@@ -57,9 +56,8 @@ if __name__ == '__main__':
     spite11 = AnimatedButton(['creators.png'],
                              330, 490, print, 'button_sound.ogg', True, 2)
     x = BaseLevelClass(['главной_фон2.png', 'главной_фон2.png', 'forest.jpg'], ['main_music3.ogg'],
-                       {'кнопки': [[spite1, 0], [spite2, 0], [spite4, 0], [spite9, 1], [spite10, 1], [spite11, 1],
-                                   [spite12, 2]],
-                        'спрайты': [[spite3, 0], [spite5, 1], [spite6, 1], [spite7, 1], [spite8, 1], [spite13, 2]]},
+                       [[spite1, 0], [spite2, 0], [spite4, 0], [spite9, 1], [spite10, 1], [spite11, 1],
+                        [spite12, 2], [spite3, 0], [spite5, 1], [spite6, 1], [spite7, 1], [spite8, 1], [spite13, 2]],
                        screen, True)
     x.draw_level()
     spite2.function = x.next_screen
