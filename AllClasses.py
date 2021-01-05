@@ -157,6 +157,9 @@ class BaseLevelClass:
     def next_screen(self, level):
         self.num_of_screen = level
 
+    def change_screen(self, ind, num_of_scr):
+        self.objs_on_level[ind][1] = num_of_scr
+
 
 class SwitchButton(AnimatedButton):
     def __init__(self, images, x, y, function, sound=None):
@@ -188,3 +191,11 @@ class SwitchButton(AnimatedButton):
                             self.function(self.level)
                         else:
                             self.function()
+
+
+class DialogSprite(Sprite):
+    def __init__(self, images, x, y):
+        super().__init__(images, x, y)
+
+    def update(self, *args):
+        pass
