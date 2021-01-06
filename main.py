@@ -1,7 +1,7 @@
 import os
 import sys
 import pygame
-from AllButtons import Button, AnimatedButton
+from AllClasses import Button, AnimatedButton
 
 
 class Sprite(pygame.sprite.Sprite):

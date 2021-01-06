@@ -54,7 +54,6 @@ class AnimatedButton(pygame.sprite.Sprite):
         if len(self.images) != 0:
             if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                     self.rect.collidepoint(args[0].pos):
-
                 if self.sound and not self.animation:
                     self.pressed(args[0].pos)
                     fullname = os.path.join('Music', self.sound)
@@ -79,7 +78,6 @@ class AnimatedButton(pygame.sprite.Sprite):
 
 
 class Sprite(pygame.sprite.Sprite):
-
     def __init__(self, images, x, y, sound=None):
         super().__init__()
         self.images = images
@@ -131,9 +129,10 @@ class BaseLevelClass:
         self.start_background_music()
 
     def start_background_music(self):
-        fullname = os.path.join('Music', self.fon_music[0])
-        mus = pygame.mixer.Sound(fullname)
-        mus.play(-1)
+        if self.fon_music:
+            fullname = os.path.join('Music', self.fon_music[0])
+            mus = pygame.mixer.Sound(fullname)
+            mus.play(-1)
 
     def draw_level(self):
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])

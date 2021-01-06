@@ -1,15 +1,18 @@
 import pygame
 from AllClasses import BaseLevelClass, AnimatedButton, Sprite
 
+def prnt():
+    print(132)
+
 if __name__ == '__main__':
     pygame.init()
-    screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((500, 300))
 
     clock = pygame.time.Clock()
     spite1 = AnimatedButton(['start.png', 'start.png'],
-                            490, 560, print, 'button_sound.ogg')
+                            490, 560, prnt, 'button_sound.ogg')
     spite2 = AnimatedButton(['settings.png', 'settings.png'],
-                            490, 650, print, 'button_sound.ogg')
+                            490, 650, prnt, 'button_sound.ogg')
     spite4 = AnimatedButton(['exit.png', 'exit2.png'],
                             542, 712, exit, 'button_sound.ogg')
     spite3 = Sprite(['main_name.png'],
