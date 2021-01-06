@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+import time
 
 
 class Button:
@@ -27,7 +28,7 @@ class Button:
 
 
 class AnimatedButton(pygame.sprite.Sprite):
-    def __init__(self, images, x, y, function, sound=None):
+    def __init__(self, images, x, y, function, sound=None, go_to=False, level=0):
         super().__init__()
         self.images = images
         self.image = self.load_image(self.images[0])
@@ -35,10 +36,12 @@ class AnimatedButton(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.sound = sound
-        self.img_count = 1
+        self.img_count = 0
         self.animation = False
         self.function = function
         self.need_to_update = True
+        self.go_to = go_to
+        self.level = level
 
     def load_image(self, name):
         # удалить на релизе
@@ -51,30 +54,32 @@ class AnimatedButton(pygame.sprite.Sprite):
         return image
 
     def update(self, *args):
-        if len(self.images) != 0:
-            if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-                    self.rect.collidepoint(args[0].pos):
-                if self.sound and not self.animation:
-                    self.pressed(args[0].pos)
-                    fullname = os.path.join('Music', self.sound)
-                    pygame.mixer.music.load(fullname)
-                    pygame.mixer.music.play()
-                self.animation = True
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            self.pressed(args[0].pos)
+            if self.sound and not self.animation:
+                fullname = os.path.join('Music', self.sound)
+                pygame.mixer.music.load(fullname)
+                pygame.mixer.music.play()
+            self.animation = True
 
-            if self.animation:
-                self.image = self.load_image(self.images[self.img_count // len(self.images)])
-                self.img_count += 1
-                if self.img_count == len(self.images) ** 2:
-                    self.img_count = 0
-                    self.image = self.load_image(self.images[0])
-                    self.animation = False
+        if self.animation:
+            self.image = self.load_image(self.images[self.img_count // len(self.images)])
+            self.img_count += 1
+            if self.img_count == len(self.images) ** 2:
+                self.img_count = 0
+                self.image = self.load_image(self.images[-1])
+                self.animation = False
 
     def pressed(self, mouse):
         if mouse[0] >= self.rect.x:
             if mouse[1] >= self.rect.y:
                 if mouse[0] <= self.rect.x + self.rect.width:
                     if mouse[1] <= self.rect.y + self.rect.height:
-                        self.function()
+                        if self.go_to:
+                            self.function(self.level)
+                        else:
+                            self.function()
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -86,7 +91,7 @@ class Sprite(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.sound = sound
-        self.img_count = 1
+        self.img_count = 0
         self.animation = False
 
     def load_image(self, name):
@@ -100,15 +105,14 @@ class Sprite(pygame.sprite.Sprite):
         return image
 
     def update(self, *args):
-        if len(self.images) != 1:
-            if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-                    self.rect.collidepoint(args[0].pos):
-                if self.sound and not self.animation:
-                    fullname = os.path.join('Music', self.sound)
-                    pygame.mixer.music.load(fullname)
-                    pygame.mixer.music.play()
-                self.animation = True
-
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            if self.sound != None:
+                fullname = os.path.join('Music', self.sound)
+                pygame.mixer.music.load(fullname)
+                pygame.mixer.music.play()
+            self.animation = True
+        if len(self.images) > 1:
             if self.animation:
                 self.image = self.load_image(self.images[self.img_count // len(self.images)])
                 self.img_count += 1
@@ -119,7 +123,7 @@ class Sprite(pygame.sprite.Sprite):
 
 
 class BaseLevelClass:
-    def __init__(self, wallpapers, fon_music, objs_on_level, display):
+    def __init__(self, wallpapers, fon_music, objs_on_level, display, transform=False):
         self.all_sprites = pygame.sprite.Group()
         self.wallpapers = wallpapers
         self.fon_music = fon_music
@@ -127,21 +131,93 @@ class BaseLevelClass:
         self.num_of_screen = 0
         self.display = display
         self.start_background_music()
+        self.n = 1
+        self.transform = transform
 
     def start_background_music(self):
-        if self.fon_music:
-            fullname = os.path.join('Music', self.fon_music[0])
-            mus = pygame.mixer.Sound(fullname)
-            mus.play(-1)
+        fullname = os.path.join('Music', self.fon_music[0])
+        mus = pygame.mixer.Sound(fullname)
+        mus.play(-1)
 
     def draw_level(self):
+        self.all_sprites = pygame.sprite.Group()
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
-        image1 = pygame.transform.scale(image, (1920, 1080))
+        if self.transform:
+            image1 = pygame.transform.scale(image, (1920, 1080))
+        else:
+            image1 = image
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            for j in self.objs_on_level[i]:
-                if j[1] == self.num_of_screen:
-                    self.all_sprites.add(j[0])
+            if i[1] == self.num_of_screen:
+                self.all_sprites.add(i[0])
         self.all_sprites.draw(self.display)
+
+    def next_screen(self, level):
+        self.num_of_screen = level
+
+    def change_screen_on(self, ind):
+        self.objs_on_level[ind][1] = self.num_of_screen
+
+    def change_screen_off(self, ind):
+        self.objs_on_level[ind][1] = -1
+
+
+class SwitchButton(AnimatedButton):
+    def __init__(self, images, x, y, function, sound=None):
+        super().__init__(images, x, y, function, sound=None)
+        self.img_count = 0
+        self.image = self.load_image(self.images[self.img_count])
+        self.sound = sound
+
+    def update(self, *args):
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            self.pressed(args[0].pos)
+            if self.sound and not self.animation:
+                fullname = os.path.join('Music', self.sound)
+                pygame.mixer.music.load(fullname)
+                pygame.mixer.music.play()
+            if self.img_count == 0:
+                self.img_count = 1
+            else:
+                self.img_count = 0
+            self.image = self.load_image(self.images[self.img_count])
+
+    def pressed(self, mouse):
+        if mouse[0] >= self.rect.x:
+            if mouse[1] >= self.rect.y:
+                if mouse[0] <= self.rect.x + self.rect.width:
+                    if mouse[1] <= self.rect.y + self.rect.height:
+                        if self.go_to:
+                            self.function(self.level)
+                        else:
+                            self.function()
+
+
+class DialogSprite(Sprite):
+    def __init__(self, images, x, y, function, sprite, ind=-1):
+        super().__init__(images, x, y)
+        self.i = 0
+        self.images = images
+        self.image = self.load_image(self.images[0])
+        self.rect.x = x
+        self.rect.y = y
+        self.sprite = sprite
+        self.function = function
+        self.ind = ind
+        self.can = False
+
+    def update(self, *args):
+        self.i += 1
+        if args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.sprite.rect.collidepoint(args[0].pos):
+            self.can = True
+            self.i = 0
+            print(1)
+        if self.can:
+            if self.i > 40:
+                self.can = False
+                self.function(self.ind)
+                self.i = 0
