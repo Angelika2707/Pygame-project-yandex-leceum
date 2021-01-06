@@ -215,9 +215,8 @@ class DialogSprite(Sprite):
                 self.sprite.rect.collidepoint(args[0].pos):
             self.can = True
             self.i = 0
-            print(1)
         if self.can:
-            if self.i > 40:
+            if self.i > 30:
                 self.can = False
                 self.function(self.ind)
                 self.i = 0
