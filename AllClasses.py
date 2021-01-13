@@ -80,6 +80,7 @@ class AnimatedButton(pygame.sprite.Sprite):
                             self.function(self.level)
                         else:
                             self.function()
+                        time.sleep(0.2)
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -150,6 +151,10 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
+            if len(i[0].groups()) == 0:
+                for num, item in enumerate(self.objs_on_level):
+                    if i == item:
+                        self.objs_on_level.pop(num)
             if i[1] == self.num_of_screen:
                 self.all_sprites.add(i[0])
         self.all_sprites.draw(self.display)
@@ -220,3 +225,21 @@ class DialogSprite(Sprite):
                 self.can = False
                 self.function(self.ind)
                 self.i = 0
+
+
+class Item(AnimatedButton):
+    def __init__(self, name, images, x, y, inventory, all_sprites, sound=None, level=0):
+        super().__init__(images, x, y, None, sound=None, go_to=False, level=0)
+        self.name = name
+        self.inventory = inventory
+        self.all_sprites = all_sprites
+        self.all_sprites.add(self)
+
+    def pressed(self, mouse):
+        if mouse[0] >= self.rect.x:
+            if mouse[1] >= self.rect.y:
+                if mouse[0] <= self.rect.x + self.rect.width:
+                    if mouse[1] <= self.rect.y + self.rect.height:
+                        self.inventory.append(self.name)
+                        self.all_sprites.remove(self)
+                        self.kill()
