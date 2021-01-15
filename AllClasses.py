@@ -151,10 +151,10 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            if len(i[0].groups()) == 0:
-                for num, item in enumerate(self.objs_on_level):
-                    if i == item:
-                        self.objs_on_level.pop(num)
+            # if len(i[0].groups()) == 0:
+            #     for num, item in enumerate(self.objs_on_level):
+            #         if i == item:
+            #             self.objs_on_level.pop(num)
             if i[1] == self.num_of_screen:
                 self.all_sprites.add(i[0])
         self.all_sprites.draw(self.display)
