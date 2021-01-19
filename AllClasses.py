@@ -122,6 +122,9 @@ class Sprite(pygame.sprite.Sprite):
                     self.image = self.load_image(self.images[0])
                     self.animation = False
 
+    def ret_position(self):
+        return [self.rect.x, self.rect.y]
+
 
 class BaseLevelClass:
     def __init__(self, wallpapers, fon_music, objs_on_level, display, transform=False):
@@ -243,3 +246,13 @@ class Item(AnimatedButton):
                         self.inventory.append(self.name)
                         self.all_sprites.remove(self)
                         self.kill()
+
+
+class Point():
+    def __init__(self, x, y):
+        super().__init__()
+        self.x = x
+        self.y = y
+
+    def return_cords(self):
+        return [self.x, self.y]

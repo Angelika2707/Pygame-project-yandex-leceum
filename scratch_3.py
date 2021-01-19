@@ -3,7 +3,9 @@ class Node:
     def __init__(self, data, indexloc=None):
         self.data = data
         self.index = indexloc
-#ddd
+
+
+# ddd
 class Graph:
 
     @classmethod
@@ -16,7 +18,6 @@ class Graph:
         self.nodes = nodes
         for i in range(len(self.nodes)):
             self.nodes[i].index = i
-
 
     def connect_dir(self, node1, node2, weight=1):
         node1, node2 = self.get_index_from_node(node1), self.get_index_from_node(node2)
