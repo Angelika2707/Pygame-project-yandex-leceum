@@ -22,7 +22,7 @@ def extensive_find():
     searched = []
     end = finish
     graph = {start: [[point, point2], [], 0], point: [[finish, point2], [start]], point2: [[finish], [point, start]],
-             finish: [[], [point, point2]]} #точки графа
+             finish: [[], [point, point2]]}  # точки графа
     search_queue = deque()
     s = deque()
     col = 1
