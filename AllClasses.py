@@ -249,10 +249,14 @@ class Item(AnimatedButton):
 
 
 class Point():
-    def __init__(self, x, y):
+    def __init__(self, x, y, name):
         super().__init__()
         self.x = x
         self.y = y
+        self.name = name
 
     def return_cords(self):
         return [self.x, self.y]
+
+    def __repr__(self):
+        return self.name
