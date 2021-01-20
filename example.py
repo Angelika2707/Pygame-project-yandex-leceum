@@ -23,15 +23,15 @@ if __name__ == '__main__':
 
     # параметры для объекта item
     parameters = {
-        'name': 'music', # имя - по нему будем ориентироваться что за элем
-        'images': ['music_switch_button1.png'], #картинки, может работать как спрайт, тк наследуется от animated button
+        'name': 'music',  # имя - по нему будем ориентироваться что за элем
+        'images': ['креветка.png'],  # картинки, может работать как спрайт, тк наследуется от animated button
         'x': 10,
         'y': 10,
-        'inventory': inventory, # сюда передается ссылка на инвентарь, куда будут улетать предметы
-        'all_sprites': all_sprites2 # группа, item автоматически добавляет себя в группу, которую тут укажешь
+        'inventory': inventory,  # сюда передается ссылка на инвентарь, куда будут улетать предметы
+        'all_sprites': all_sprites2  # группа, item автоматически добавляет себя в группу, которую тут укажешь
     }
 
-    item1 = Item(**parameters) # создание item по параметрам описанным выше
+    item1 = Item(**parameters)  # создание item по параметрам описанным выше
 
     base_level_class = BaseLevelClass(wallpapers=['start_level_1.png', 'level_2.png'],
                                       fon_music=['piano_fon.mp3'],
