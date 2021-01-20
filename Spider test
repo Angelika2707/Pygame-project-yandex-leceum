@@ -1,0 +1,431 @@
+import os
+import sys
+import random
+import pygame
+
+# Изображение не получится загрузить
+# без предварительной инициализации pygame
+pygame.init()
+size = width, height = 700, 700
+screen = pygame.display.set_mode(size)
+tochkaa = (872, 494)
+tochkab = (650, 650)
+tochkac = (800, 800)
+tochkad = (950, 600)
+tochkae = (950, 800)
+tochkaf = (1100, 350)
+tochkao = (1100, 950)
+tochkah = (1200, 475)
+tochkai = (1300, 250)
+
+
+def load_image(name, colorkey=None):
+    fullname = os.path.join('new', name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    if colorkey is not None:
+        image = image.convert()
+        if colorkey == -1:
+            colorkey = image.get_at((0, 0))
+        image.set_colorkey(colorkey)
+    else:
+        image = image.convert_alpha()
+    return image
+
+
+class Node:
+
+    def __init__(self, data, indexloc=None):
+        self.data = data
+        self.index = indexloc
+
+
+class DijkstraNodeDecorator:
+
+    def __init__(self, node):
+        self.node = node
+        self.prov_dist = float('inf')
+        self.hops = []
+
+    def index(self):
+        return self.node.index
+
+    def data(self):
+        return self.node.data
+
+    def update_data(self, data):
+        self.prov_dist = data['prov_dist']
+        self.hops = data['hops']
+        return self
+
+
+class BinaryTree:
+
+    def __init__(self, nodes=[]):
+        self.nodes = nodes
+
+    def root(self):
+        return self.nodes[0]
+
+    def iparent(self, i):
+        return (i - 1) // 2
+
+    def ileft(self, i):
+        return 2 * i + 1
+
+    def iright(self, i):
+        return 2 * i + 2
+
+    def left(self, i):
+        return self.node_at_index(self.ileft(i))
+
+    def right(self, i):
+        return self.node_at_index(self.iright(i))
+
+    def parent(self, i):
+        return self.node_at_index(self.iparent(i))
+
+    def node_at_index(self, i):
+        return self.nodes[i]
+
+    def size(self):
+        return len(self.nodes)
+
+
+class MinHeap(BinaryTree):
+
+    def __init__(self, nodes, is_less_than=lambda a, b: a < b, get_index=None, update_node=lambda node, newval: newval):
+        BinaryTree.__init__(self, nodes)
+        self.order_mapping = list(range(len(nodes)))
+        self.is_less_than, self.get_index, self.update_node = is_less_than, get_index, update_node
+        self.min_heapify()
+
+    # Изменение в кучу узлов, предполагается, что все поддеревья уже кучи
+    def min_heapify_subtree(self, i):
+
+        size = self.size()
+        ileft = self.ileft(i)
+        iright = self.iright(i)
+        imin = i
+        if (ileft < size and self.is_less_than(self.nodes[ileft], self.nodes[imin])):
+            imin = ileft
+        if (iright < size and self.is_less_than(self.nodes[iright], self.nodes[imin])):
+            imin = iright
+        if (imin != i):
+            self.nodes[i], self.nodes[imin] = self.nodes[imin], self.nodes[i]
+            # Если есть лямбда для получения абсолютного индекса узла
+            # обновляет массив order_mapping для указания, где находится индекс
+            # в массиве узлов (осмотр для этого индекса будет 0(1))
+            if self.get_index is not None:
+                self.order_mapping[self.get_index(self.nodes[imin])] = imin
+                self.order_mapping[self.get_index(self.nodes[i])] = i
+            self.min_heapify_subtree(imin)
+
+    # Превращает в кучу массив, который еще ей не является
+    def min_heapify(self):
+        for i in range(len(self.nodes), -1, -1):
+            self.min_heapify_subtree(i)
+
+    def min(self):
+        return self.nodes[0]
+
+    def pop(self):
+        min = self.nodes[0]
+        if self.size() > 1:
+            self.nodes[0] = self.nodes[-1]
+            self.nodes.pop()
+            # Обновляет order_mapping, если можно
+            if self.get_index is not None:
+                self.order_mapping[self.get_index(self.nodes[0])] = 0
+            self.min_heapify_subtree(0)
+        elif self.size() == 1:
+            self.nodes.pop()
+        else:
+            return None
+        # Если self.get_index существует, обновляет self.order_mapping для указания, что
+        # узел индекса больше не в куче
+        if self.get_index is not None:
+            # Устанавливает значение None для self.order_mapping для обозначения непринадлежности к куче
+            self.order_mapping[self.get_index(min)] = None
+        return min
+
+    # Обновляет значение узла и подстраивает его, если нужно, чтобы сохранить свойства кучи
+    def decrease_key(self, i, val):
+        self.nodes[i] = self.update_node(self.nodes[i], val)
+        iparent = self.iparent(i)
+        while (i != 0 and not self.is_less_than(self.nodes[iparent], self.nodes[i])):
+            self.nodes[iparent], self.nodes[i] = self.nodes[i], self.nodes[iparent]
+            # Если есть лямбда для получения индекса узла
+            # обновляет массив order_mapping для указания, где именно находится индекс
+            # в массиве узлов (осмотр этого индекса O(1))
+            if self.get_index is not None:
+                self.order_mapping[self.get_index(self.nodes[iparent])] = iparent
+                self.order_mapping[self.get_index(self.nodes[i])] = i
+            i = iparent
+            iparent = self.iparent(i) if i > 0 else None
+
+    def index_of_node_at(self, i):
+        return self.get_index(self.nodes[i])
+
+
+class Graph:
+
+    def __init__(self, nodes):
+        self.adj_list = [[node, []] for node in nodes]
+        for i in range(len(nodes)):
+            nodes[i].index = i
+
+    def connect_dir(self, node1, node2, weight=1):
+        node1, node2 = self.get_index_from_node(node1), self.get_index_from_node(node2)
+        # Отмечает, что нижеуказанное не предотвращает от добавления связи дважды
+        self.adj_list[node1][1].append((node2, weight))
+
+    def connect(self, node1, node2, weight=1):
+        self.connect_dir(node1, node2, weight)
+        self.connect_dir(node2, node1, weight)
+
+    def connections(self, node):
+        node = self.get_index_from_node(node)
+        return self.adj_list[node][1]
+
+    def get_index_from_node(self, node):
+        if not isinstance(node, Node) and not isinstance(node, int):
+            raise ValueError("node must be an integer or a Node object")
+        if isinstance(node, int):
+            return node
+        else:
+            return node.index
+
+    def dijkstra(self, src):
+
+        src_index = self.get_index_from_node(src)
+        # Указывает узлы к DijkstraNodeDecorators
+        # Это инициализирует все предварительные расстояния до бесконечности
+        dnodes = [DijkstraNodeDecorator(node_edges[0]) for node_edges in self.adj_list]
+        # Устанавливает предварительное расстояние исходного узла до 0 и его массив перескоков к его узлу
+        dnodes[src_index].prov_dist = 0
+        dnodes[src_index].hops.append(dnodes[src_index].node)
+        # Устанавливает все методы настройки кучи
+        is_less_than = lambda a, b: a.prov_dist < b.prov_dist
+        get_index = lambda node: node.index()
+        update_node = lambda node, data: node.update_data(data)
+
+        # Подтверждает работу кучи с DijkstraNodeDecorators с узлами
+        heap = MinHeap(dnodes, is_less_than, get_index, update_node)
+
+        min_dist_list = []
+
+        while heap.size() > 0:
+            # Получает узел кучи, что еще не просматривался ('seen')
+            # и находится на минимальном расстоянии от исходного узла
+            min_decorated_node = heap.pop()
+            min_dist = min_decorated_node.prov_dist
+            hops = min_decorated_node.hops
+            min_dist_list.append([min_dist, hops])
+
+            # Получает все следующие перескоки. Это больше не O(n^2) операция
+            connections = self.connections(min_decorated_node.node)
+            # Для каждой связи обновляет ее путь и полное расстояние от
+            # исходного узла, если общее расстояние меньше, чем текущее расстояние
+            # в массиве dist
+            for (inode, weight) in connections:
+                node = self.adj_list[inode][0]
+                heap_location = heap.order_mapping[inode]
+                if (heap_location is not None):
+                    tot_dist = weight + min_dist
+                    if tot_dist < heap.nodes[heap_location].prov_dist:
+                        hops_cpy = list(hops)
+                        hops_cpy.append(node)
+                        data = {'prov_dist': tot_dist, 'hops': hops_cpy}
+                        heap.decrease_key(heap_location, data)
+
+        return min_dist_list
+
+
+class spider(pygame.sprite.Sprite):
+    spiderr = load_image("1212.png")
+    nope = load_image("1212.png")
+
+    def __init__(self, group):
+        super().__init__(group)
+        self.spiderr = spider.spiderr
+        self.rect = self.spiderr.get_rect()
+        self.rect.x = 872
+        self.rect.y = 494
+
+        self.nope = spider.nope
+        self.rect1 = self.nope.get_rect()
+        self.rect1.x = 872
+        self.rect1.y = 494
+
+        self.nope = spider.nope
+        self.rect1 = self.nope.get_rect()
+        self.rect1.x = 650
+        self.rect1.y = 650
+
+        self.nope = spider.nope
+        self.rect2 = self.nope.get_rect()
+        self.rect2.x = 800
+        self.rect2.y = 800
+
+        self.nope = spider.nope
+        self.rect3 = self.nope.get_rect()
+        self.rect3.x = 950
+        self.rect3.y = 600
+
+        self.nope = spider.nope
+        self.rect4 = self.nope.get_rect()
+        self.rect4.x = 950
+        self.rect4.y = 800
+
+        self.nope = spider.nope
+        self.rect5 = self.nope.get_rect()
+        self.rect5.x = 1100
+        self.rect5.y = 350
+
+        self.nope = spider.nope
+        self.rect6 = self.nope.get_rect()
+        self.rect6.x = 1100
+        self.rect6.y = 950
+
+        self.nope = spider.nope
+        self.rect7 = self.nope.get_rect()
+        self.rect7.x = 1200
+        self.rect7.y = 475
+
+        self.nope = spider.nope
+        self.rect8 = self.nope.get_rect()
+        self.rect8.x = 1300
+        self.rect8.y = 250
+
+    def go(self):
+        j = 0
+        while sp != 'i':
+            z = [(weight, [n.data for n in node]) for (weight, node) in g.dijkstra(a)]
+            for i in z:
+                if 'i' in i[1]:
+                    v = i[1]
+            sp = v[j]
+            j = j + 1
+            if j == 0:
+                self.rect.x = 872
+                self.rect.y = 494
+            if j == 1:
+                self.rect.x = 650
+                self.rect.y = 650
+            if j == 2:
+                self.rect.x = 800
+                self.rect.y = 800
+            if j == 3:
+                self.rect.x = 950
+                self.rect.y = 600
+            if j == 4:
+                self.rect.x = 950
+                self.rect.y = 800
+            if j == 5:
+                self.rect.x = 1100
+                self.rect.y = 350
+            if j == 6:
+                self.rect.x = 1100
+                self.rect.y = 950
+            if j == 7:
+                self.rect.x = 1200
+                self.rect.y = 475
+            if j == 8:
+                self.rect.x = 1300
+                self.rect.y = 250
+
+
+class Web(pygame.sprite.Sprite):
+    spider = load_image("1212.png")
+    web = load_image("4444.png")
+
+    def __init__(self, group):
+        # НЕОБХОДИМО вызвать конструктор родительского класса Sprite.
+        # Это очень важно!!!
+        super().__init__(group)
+        self.spider = Web.spider
+        self.rect = self.spider.get_rect()
+        self.rect.x = 115
+        self.rect.y = 120
+
+    def update(self, *args):
+        self.rect = self.rect.move(220, 330)
+
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN:
+            self.rect.collidepoint(args[0].pos)
+            self.image = self.image_boom
+
+
+all_sprites = pygame.sprite.Group()
+sprite = pygame.sprite.Sprite()
+sprite.image = load_image("1212.png")
+sprite.rect = sprite.image.get_rect()
+all_sprites.add(sprite)
+sprite1 = pygame.sprite.Sprite()
+sprite1.image = load_image("11.png")
+sprite1.rect1 = sprite.image.get_rect()
+all_sprites.add(sprite1)
+sprite2 = pygame.sprite.Sprite()
+sprite2.image = load_image("4444.png")
+sprite2.rect2 = sprite.image.get_rect()
+all_sprites.add(sprite2)
+sprite3 = pygame.sprite.Sprite()
+sprite3.image = load_image("boom.png")
+sprite3.rect3 = sprite.image.get_rect()
+all_sprites.add(sprite3)
+sprite.rect.x = 5
+sprite.rect.y = 20
+sprite1.rect1.x = 115
+sprite1.rect1.y = 120
+sprite2.rect2.x = 235
+sprite2.rect2.y = 220
+sprite3.rect3.x = 125
+sprite3.rect3.y = 320
+a = Node('a')
+b = Node('b')
+c = Node('c')
+d = Node('d')
+e = Node('e')
+f = Node('f')
+h = Node('h')
+i = Node('i')
+o = Node('o')
+
+g = Graph([a, b, c, d, e, f, h, i, o])
+
+g.connect(a, b, 5)
+g.connect(a, c, 4)
+g.connect(b, e, 2)
+g.connect(c, d, 4)
+g.connect(d, f, 4)
+g.connect(e, o, 7)
+g.connect(o, h, 3)
+g.connect(h, f, 3)
+g.connect(f, i, 3)
+for q1 in range(1):
+    spider(all_sprites)
+    all_sprites.draw(screen)
+for _  in range(2):
+    Web(all_sprites)
+    all_sprites.update(event)
+    all_sprites.draw(screen)
+pygame.display.flip()
+# ожидание закрытия окна:
+while pygame.event.wait().type != pygame.QUIT:
+    pass
+# завершение работы:
+pygame.quit()
+
+
+Traceback (most recent call last):
+  File "C:/Users/i_mak/Desktop/scratch_6.py", line 410, in <module>
+    all_sprites.draw(screen)
+  File "C:\Users\i_mak\PycharmProjects\untitled\venv\lib\site-packages\pygame\sprite.py", line 546, in draw
+    surface.blits((spr.image, spr.rect) for spr in sprites)
+  File "C:\Users\i_mak\PycharmProjects\untitled\venv\lib\site-packages\pygame\sprite.py", line 546, in <genexpr>
+    surface.blits((spr.image, spr.rect) for spr in sprites)
+AttributeError: 'Sprite' object has no attribute 'rect'
