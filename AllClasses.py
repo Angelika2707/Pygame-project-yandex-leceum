@@ -154,10 +154,10 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            # if len(i[0].groups()) == 0:
-            #     for num, item in enumerate(self.objs_on_level):
-            #         if i == item:
-            #             self.objs_on_level.pop(num)
+            if len(i[0].groups()) == 0:
+                for num, item in enumerate(self.objs_on_level):
+                    if i == item:
+                        self.objs_on_level.pop(num)
             if i[1] == self.num_of_screen:
                 self.all_sprites.add(i[0])
         self.all_sprites.draw(self.display)
@@ -238,25 +238,16 @@ class Item(AnimatedButton):
         self.all_sprites = all_sprites
         self.all_sprites.add(self)
 
-    def pressed(self, mouse):
-        if mouse[0] >= self.rect.x:
-            if mouse[1] >= self.rect.y:
-                if mouse[0] <= self.rect.x + self.rect.width:
-                    if mouse[1] <= self.rect.y + self.rect.height:
-                        self.inventory.append(self.name)
-                        self.all_sprites.remove(self)
-                        self.kill()
-
-
-class Point():
-    def __init__(self, x, y, name):
-        super().__init__()
-        self.x = x
-        self.y = y
-        self.name = name
-
-    def return_cords(self):
-        return [self.x, self.y]
-
-    def __repr__(self):
-        return self.name
+    def update(self, *args):
+        super().update()
+        event = args[0]
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                mouse = event.pos
+                if mouse[0] >= self.rect.x:
+                    if mouse[1] >= self.rect.y:
+                        if mouse[0] <= self.rect.x + self.rect.width:
+                            if mouse[1] <= self.rect.y + self.rect.height:
+                                self.inventory.append(self.name)
+                                self.all_sprites.remove(self)
+                                self.kill()

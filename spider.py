@@ -1,91 +1,181 @@
 import pygame
-from collections import deque
-from AllClasses import BaseLevelClass, AnimatedButton, Point
-
-pautina = AnimatedButton(['паутина_вверх.png'],
-                         600, 600, print, None, True, -1)
-pautina2 = AnimatedButton(['паутина_наискосок_вправо.png'],
-                          700, 600, print, None, True, -1)
-pautina3 = AnimatedButton(['паутина_горизонталь.png'],
-                          700, 500, print, None, True, -1)
+import os
+import sys
 
 
-# points = [Point(600, 600), Point(700, 600), Point(700, 500)]
+class Node:
+    def __init__(self, x, y, name):
+        self.x = x
+        self.y = y
+        self.name = name
+        self.item = None
+
+    def render(self, screen):
+        pygame.draw.ellipse(screen, (255, 0, 0), ((self.x - 30, self.y - 30), (60, 60)))
+
+    def __repr__(self):
+        return f'{self.name}'
 
 
-def extensive_find():
-    start = Point(600, 600, 'start')
-    point = Point(700, 600, 'point')
-    point2 = Point(800, 800, 'point2')
-    finish = Point(700, 500, 'finish')
-    way = []
-    searched = []
-    end = finish
-    graph = {start: [[point, point2], [], 0], point: [[finish, point2], [start]], point2: [[finish], [point, start]],
-             finish: [[], [point, point2]]}  # точки графа
-    search_queue = deque()
-    s = deque()
-    col = 1
-    search_queue += graph[start][0]
-    while True:
-        if len(search_queue):
-            p = search_queue.popleft()
-            if p not in searched:
-                if end == p:
-                    print(col)
-                    break
-                else:
-                    searched.append(p)
-                    s += graph[p][0]
-                    graph[p].append(col)
+class Edge:
+    def __init__(self, node1, node2, type):
+        self.node1 = node1
+        self.node2 = node2
+        self.type = type
+        if type.lower() == 'r':
+            self.image = self.load_image('паутина_наискосок_вправо.png')
+        elif type.lower() == 'l':
+            self.image = self.load_image('паутина_наискосок_влево.png')
+        elif type.lower() == 'v':
+            self.image = self.load_image('паутина_вверх.png')
+        else:  # 'g'
+            self.image = self.load_image('паутина_горизонталь.png')
+
+    def load_image(self, name):
+        # удалить на релизе
+        fullname = os.path.join('Images', name)
+        if not os.path.isfile(fullname):
+            print(f"Файл с изображением '{fullname}' не найден")
+            sys.exit()
+        #  выше блок кода
+        image = pygame.image.load(fullname)
+        return image
+
+    def render(self, screen):
+        size = self.image.get_size()
+        if self.type == 'r':
+            screen.blit(self.image, (self.node1.x, self.node1.y - size[1]))
+        elif self.type == 'l':
+            screen.blit(self.image, (self.node1.x - size[0], self.node1.y - size[1]))
+        elif self.type == 'v':
+            screen.blit(self.image, (self.node1.x - size[0] // 2, self.node1.y - size[1]))
         else:
-            if not s:
-                break
-            search_queue += s.copy()
-            s.clear()
-            col += 1
-    print(col)
-    col -= 1
-    parent = finish
-    way.append(finish)
-    while True:
-        for i in graph[parent][1]:
-            if graph[i][2] == col:
-                col -= 1
-                way.append(i)
-                parent = i
-                break
-        if parent == start:
-            break
-    print(way)
-    return False
+            screen.blit(self.image, (self.node1.x, self.node1.y - size[1] // 2))
+
+        self.node1.render(screen)
+        self.node2.render(screen)
+
+    def __repr__(self):
+        return f'{self.node1.name}{self.node2.name}'
 
 
-extensive_find()
+class Graph:
+    def __init__(self):
+        self.ways = dict()
+        self.edges = []
 
-# if __name__ == '__main__':
-#     pygame.init()
-#     size = width, height = 1920, 1080
-#     screen = pygame.display.set_mode(size)
-#     running = True
-#     fps = 60
-#     clock = pygame.time.Clock()
-#     spider = AnimatedButton(['spider2.png'],
-#                             620, 480, print, None)
-#     bug = AnimatedButton(['bug2.png'],
-#                          890, 570, 310, print, None)
-#     x = BaseLevelClass(['spider_pole.png'], ['piano_fon.mp3'],
-#                        [[pautina, 0], [pautina2, 0], [pautina3, 0], [bug, 0], [spider, 0]],
-#                        screen, True)
-#     pautina.function = x.change_screen_off
-#     x.draw_level()
-#     while running:
-#         screen.fill((0, 0, 0))
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-#             x.all_sprites.update(event)
-#         x.draw_level()
-#         clock.tick(fps)
-#         pygame.display.flip()
-#     pygame.quit()
+    # добавляет ребро
+    def add_edge(self, edge: Edge):
+        node1, node2 = edge.node1, edge.node2
+        if node1 in self.ways:
+            self.ways[node1] += [node2]
+        else:
+            self.ways[node1] = [node2]
+
+        if node2 in self.ways:
+            self.ways[node2] += [node1]
+        else:
+            self.ways[node2] = [node1]
+        self.edges.append(edge)
+
+    # добавляет ребра
+    def add_edges(self, edges):
+        for edge in edges:
+            node1, node2 = edge.node1, edge.node2
+            if node1 in self.ways:
+                self.ways[node1] += [node2]
+            else:
+                self.ways[node1] = [node2]
+
+            if node2 in self.ways:
+                self.ways[node2] += [node1]
+            else:
+                self.ways[node2] = [node1]
+
+        self.edges += edges
+
+    # удаляет ребро
+    def delete_edge(self, edge):
+        self.edges.pop(self.edges.index(edge))
+        self.ways[edge.node1].pop(self.ways[edge.node1].index(edge.node2))
+        self.ways[edge.node2].pop(self.ways[edge.node2].index(edge.node1))
+
+    # для дейкстры - возвращает длинны маршрутов от точки до других
+    def get_lens(self, node):
+        q = [node]
+        lenghts = {node: 0}
+
+        for dot in self.ways:
+            if dot == node:
+                continue
+            lenghts[dot] = -1
+
+        while q:
+            current = q.pop(0)
+            for neighbour in self.ways[current]:
+                if lenghts[neighbour] > lenghts[current] + 1 or lenghts[neighbour] == -1:
+                    lenghts[neighbour] = lenghts[current] + 1
+                    q.append(neighbour)
+
+        return lenghts
+
+    # для дейкстры - возвращает маршрут - список точек
+    def create_way(self, start, end):
+        def get_way(end, lenght, lenghts):
+            if lenght == 0:
+                return []
+            for i in self.ways[end]:
+                if lenghts[i] == lenght - 1:
+                    return [i] + get_way(i, lenght - 1, lenghts)
+
+        lenghts = self.get_lens(start)
+        return get_way(end, lenghts[end], lenghts)[::-1] + [end]
+
+    # запуск игры, тут можно делать всё тоже самое, что и в основном цикле игры
+    def start_game(self, screen, fps, clock):
+        x = True
+        while x:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit(0)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 2:
+                        x = False
+
+            screen.fill((255, 255, 255))
+            self.render(screen)  #
+
+            clock.tick(fps)
+            pygame.display.flip()
+
+    # отрисовка графа
+    def render(self, screen):
+        for i in self.edges:
+            i.render(screen)
+
+
+if __name__ == '__main__':
+    sx, sy = 350, 650  # координаты начала
+    # создание точек, (x,y) - координаты, остальное - название, чтобы удобно печаталось
+    A = Node(sx + 0, sy + 0,'A')  # координаты точек нужно считать руками, чтобы всё подходило
+    B = Node(sx + 300, sy - 300, 'B') # если это будет слишком сложно, то я могу переделать
+    C = Node(sx + 300, sy - 600, 'C') # сейчас уже слишком поздно, чтобы я это делал
+    F = Node(sx + 0, sy - 300, 'F')
+
+    G = Graph()  # создание графа, тут же и реализована игра
+
+    AB = Edge(A, B, 'r')  # создание ребер, передаем: 2 точки по которым строим ребро, "тип"
+    BC = Edge(B, C, 'v')  # ребра, где v,g- вертикальное и горизонтальное, а
+    AF = Edge(A, F, 'v')  # l,r- наклоненные вправо или влево
+
+    G.add_edges([AB, BC, AF])  # добавляет список ребер
+    G.delete_edge(AB)  # удаляет ребро
+
+    pygame.init()
+    size = width, height = 700, 700
+    screen = pygame.display.set_mode(size)
+    running = True
+    fps = 60
+    clock = pygame.time.Clock()
+
+    G.start_game(screen, fps, clock) # этот метод запускает игру
