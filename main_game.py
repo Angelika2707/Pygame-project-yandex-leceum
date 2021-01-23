@@ -28,7 +28,7 @@ if __name__ == '__main__':
     button_dowm = AnimatedButton(['button_down.png'],
                                  900, 900, print, 'button_sound.ogg', True, 0)
     button_dowm2 = AnimatedButton(['button_down.png'],
-                                 920, 900, print, 'button_sound.ogg', True, 4)
+                                  920, 900, print, 'button_sound.ogg', True, 4)
     button_go_to_lift = AnimatedButton(['go_to_lift.png'],
                                        850, 550, print, 'button_sound.ogg', True, 2)
     buttons_in_lift = AnimatedButton(['buttons_in_lift.png'],
@@ -38,9 +38,9 @@ if __name__ == '__main__':
     door3 = AnimatedButton(['door_number3.png'],
                            900, 430, print, None, True, 5)
     door3_dil = AnimatedButton(['door_dialog_tab.png'],
-                           900, 430, print, None, True, 22)
+                               720, 200, print, None, True, 22)
     door_go_to_level = AnimatedButton(['door_dialog_tab.png'],
-                               900, 430, print, None, True, 7)
+                                      720, 200, print, None, True, 7)
     door2 = AnimatedButton(['door_number2.png'],
                            700, 310, print, None, True, 6)
     door1 = AnimatedButton(['door_number2.png'],
@@ -52,15 +52,17 @@ if __name__ == '__main__':
     bird_dialog = DialogSprite(['bird_dialog.png'], 500, 100, print, spite4, 11)
     turkey_dialog = DialogSprite(['turkey_dialog.png'], 500, 100, print, spite5, 12)
     pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, spite6, 13)
-    x = BaseLevelClass(['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png', 'км1.png'],
-                       ['piano_fon.mp3'],
-                       [[spite1, 0], [spite2, 0], [spite3, 0], [button_right1, 0], [button_right2, 1],
-                        [spite4, 1], [spite5, 1], [spite6, 1], [rabbit_dialog, -1], [deer_dialog, -1],
-                        [pigion_dialog, -1], [bird_dialog, -1], [turkey_dialog, -1], [pig_dialog, -1],
-                        [button_go_to_lift, 0], [button_dowm, 2], [buttons_in_lift, 2], [buttons_hall, 3], [door3, 4],
-                        [button_dowm2, 5], [door2, 4], [door1, 4], [button_dialog_door, -1], [door3_dil, 5], [button_dowm2, 6],
-                        [door_go_to_level, 6]],
-                       screen)
+    x = BaseLevelClass(
+        ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
+         'км1.png'],
+        ['piano_fon.mp3'],
+        [[spite1, 0], [spite2, 0], [spite3, 0], [button_right1, 0], [button_right2, 1],
+         [spite4, 1], [spite5, 1], [spite6, 1], [rabbit_dialog, -1], [deer_dialog, -1],
+         [pigion_dialog, -1], [bird_dialog, -1], [turkey_dialog, -1], [pig_dialog, -1],
+         [button_go_to_lift, 0], [button_dowm, 2], [buttons_in_lift, 2], [buttons_hall, 3], [door3, 4],
+         [button_dowm2, 5], [door2, 4], [door1, 4], [button_dialog_door, -1], [door3_dil, 5], [button_dowm2, 6],
+         [door_go_to_level, 6]],
+        screen)
 
     x.draw_level()
     all_sprites2 = pygame.sprite.Group()
@@ -77,7 +79,6 @@ if __name__ == '__main__':
     pigion_dialog.function = x.change_screen_off
     bird_dialog.function = x.change_screen_off
     turkey_dialog.function = x.change_screen_off
-    button_dialog_door.function = x.change_screen_off
     pig_dialog.function = x.change_screen_off
     button_right1.function = x.next_screen
     button_right2.function = x.next_screen
@@ -97,7 +98,6 @@ if __name__ == '__main__':
     spite5.function = x.change_screen_on
     spite6.function = x.change_screen_on
     door3_dil.function = x.change_screen_on
-    #door1.function = x.change_screen_on
     while running:
         screen.fill((0, 0, 0))
         for event in pygame.event.get():

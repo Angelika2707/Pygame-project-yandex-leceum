@@ -219,7 +219,6 @@ class DialogSprite(Sprite):
 
     def update(self, *args):
         self.i += 1
-        print(self.can)
         if args[0].type == pygame.MOUSEBUTTONDOWN and \
                 self.sprite.rect.collidepoint(args[0].pos):
             self.can = True
