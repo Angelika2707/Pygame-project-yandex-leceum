@@ -1,6 +1,9 @@
+import random
+
 import pygame
 import os
 import sys
+from AllClasses import Sprite
 
 
 class Node:
@@ -17,11 +20,13 @@ class Node:
         return f'{self.name}'
 
 
-class Edge:
+class Edge(pygame.sprite.Sprite):
     def __init__(self, node1, node2, type):
+        super().__init__()
         self.node1 = node1
         self.node2 = node2
         self.type = type
+
         if type.lower() == 'r':
             self.image = self.load_image('паутина_наискосок_вправо.png')
         elif type.lower() == 'l':
@@ -30,6 +35,7 @@ class Edge:
             self.image = self.load_image('паутина_вверх.png')
         else:  # 'g'
             self.image = self.load_image('паутина_горизонталь.png')
+        self.rect = self.image.get_rect()
 
     def load_image(self, name):
         # удалить на релизе
@@ -45,12 +51,20 @@ class Edge:
         size = self.image.get_size()
         if self.type == 'r':
             screen.blit(self.image, (self.node1.x, self.node1.y - size[1]))
+            self.rect.x = self.node1.x
+            self.rect.y = self.node1.y - size[1]
         elif self.type == 'l':
             screen.blit(self.image, (self.node1.x - size[0], self.node1.y - size[1]))
+            self.rect.x = self.node1.x - size[0]
+            self.rect.y = self.node1.y - size[1]
         elif self.type == 'v':
             screen.blit(self.image, (self.node1.x - size[0] // 2, self.node1.y - size[1]))
+            self.rect.x = self.node1.x - size[0] // 2
+            self.rect.y = self.node1.y - size[1]
         else:
             screen.blit(self.image, (self.node1.x, self.node1.y - size[1] // 2))
+            self.rect.x = self.node1.x
+            self.rect.y = self.node1.y - size[1] // 2
 
         self.node1.render(screen)
         self.node2.render(screen)
@@ -58,11 +72,17 @@ class Edge:
     def __repr__(self):
         return f'{self.node1.name}{self.node2.name}'
 
+    def update(self, *args):
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
+                self.rect.collidepoint(args[0].pos):
+            print(self)  # здесь печатается класс при нажатии
+
 
 class Graph:
     def __init__(self):
         self.ways = dict()
         self.edges = []
+        self.group_spr = pygame.sprite.Group()
 
     # добавляет ребро
     def add_edge(self, edge: Edge):
@@ -80,6 +100,7 @@ class Graph:
 
     # добавляет ребра
     def add_edges(self, edges):
+        print(edges)
         for edge in edges:
             node1, node2 = edge.node1, edge.node2
             if node1 in self.ways:
@@ -91,7 +112,8 @@ class Graph:
                 self.ways[node2] += [node1]
             else:
                 self.ways[node2] = [node1]
-
+        for i in edges:
+            self.group_spr.add(i)
         self.edges += edges
 
     # удаляет ребро
@@ -135,16 +157,16 @@ class Graph:
     def start_game(self, screen, fps, clock):
         x = True
         while x:
+            screen.fill((255, 255, 255))
+            self.render(screen)  #
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 2:
                         x = False
-
-            screen.fill((255, 255, 255))
-            self.render(screen)  #
-
+                self.group_spr.update(event)
             clock.tick(fps)
             pygame.display.flip()
 
@@ -157,9 +179,9 @@ class Graph:
 if __name__ == '__main__':
     sx, sy = 350, 650  # координаты начала
     # создание точек, (x,y) - координаты, остальное - название, чтобы удобно печаталось
-    A = Node(sx + 0, sy + 0,'A')  # координаты точек нужно считать руками, чтобы всё подходило
-    B = Node(sx + 300, sy - 300, 'B') # если это будет слишком сложно, то я могу переделать
-    C = Node(sx + 300, sy - 600, 'C') # сейчас уже слишком поздно, чтобы я это делал
+    A = Node(sx + 0, sy + 0, 'A')  # координаты точек нужно считать руками, чтобы всё подходило
+    B = Node(sx + 300, sy - 300, 'B')  # если это будет слишком сложно, то я могу переделать
+    C = Node(sx + 300, sy - 600, 'C')  # сейчас уже слишком поздно, чтобы я это делал
     F = Node(sx + 0, sy - 300, 'F')
 
     G = Graph()  # создание графа, тут же и реализована игра
@@ -178,4 +200,4 @@ if __name__ == '__main__':
     fps = 60
     clock = pygame.time.Clock()
 
-    G.start_game(screen, fps, clock) # этот метод запускает игру
+    G.start_game(screen, fps, clock)  # этот метод запускает игру

@@ -1,14 +1,10 @@
 import pygame
 from AllClasses import BaseLevelClass, AnimatedButton, Sprite, SwitchButton, DialogSprite, Item
-
-
-def print123():
-    print(123)
-
+from spider import Graph, Edge, Node
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 500, 500
+    size = width, height = 1000, 600
     screen = pygame.display.set_mode(size)
     running = True
     fps = 60
@@ -24,11 +20,13 @@ if __name__ == '__main__':
     # параметры для объекта item
     parameters = {
         'name': 'music',  # имя - по нему будем ориентироваться что за элем
-        'images': ['креветка.png'],  # картинки, может работать как спрайт, тк наследуется от animated button
+        'images': ['креветка.png'],
+        # картинки, может работать как спрайт, тк наследуется от animated button
         'x': 10,
         'y': 10,
         'inventory': inventory,  # сюда передается ссылка на инвентарь, куда будут улетать предметы
-        'all_sprites': all_sprites2  # группа, item автоматически добавляет себя в группу, которую тут укажешь
+        'all_sprites': all_sprites2
+        # группа, item автоматически добавляет себя в группу, которую тут укажешь
     }
 
     item1 = Item(**parameters)  # создание item по параметрам описанным выше
@@ -39,15 +37,30 @@ if __name__ == '__main__':
                                       display=screen)
     base_level_class.draw_level()
 
+    A = Node(100, 200, 'A')
+    B = Node(200, 100, 'B')
+
+    G = Graph()
+
+    AB = Edge(A, B, 'паутина_наискосок_вправо.png')
+
+    G.add_edge(AB)
+
+
     while running:
         # print(inventory)
         screen.fill((0, 0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 2:
+                    G.start_game(screen, fps, clock)
+
+
             base_level_class.all_sprites.update(event)
+
         all_sprites2.update(event)
-        print(inventory)
 
         base_level_class.draw_level()
         clock.tick(fps)

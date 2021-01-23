@@ -26,7 +26,7 @@ if __name__ == '__main__':
     pygame.init()
     sound_music = True
     sound_sound = True
-    screen = pygame.display.set_mode((1920, 1080))
+    screen = pygame.display.set_mode((1920 , 1280))
 
     clock = pygame.time.Clock()
     spite1 = AnimatedButton(['start.png'],
