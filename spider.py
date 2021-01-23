@@ -63,29 +63,29 @@ def extensive_find():
 
 extensive_find()
 
-# if __name__ == '__main__':
-#     pygame.init()
-#     size = width, height = 1920, 1080
-#     screen = pygame.display.set_mode(size)
-#     running = True
-#     fps = 60
-#     clock = pygame.time.Clock()
-#     spider = AnimatedButton(['spider2.png'],
-#                             620, 480, print, None)
-#     bug = AnimatedButton(['bug2.png'],
-#                          890, 570, 310, print, None)
-#     x = BaseLevelClass(['spider_pole.png'], ['piano_fon.mp3'],
-#                        [[pautina, 0], [pautina2, 0], [pautina3, 0], [bug, 0], [spider, 0]],
-#                        screen, True)
-#     pautina.function = x.change_screen_off
-#     x.draw_level()
-#     while running:
-#         screen.fill((0, 0, 0))
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-#             x.all_sprites.update(event)
-#         x.draw_level()
-#         clock.tick(fps)
-#         pygame.display.flip()
-#     pygame.quit()
+if __name__ == '__main__':
+    pygame.init()
+    size = width, height = 1920, 1080
+    screen = pygame.display.set_mode(size)
+    running = True
+    fps = 60
+    clock = pygame.time.Clock()
+    spider = AnimatedButton(['spider2.png'],
+                            620, 480, print, None)
+    bug = AnimatedButton(['bug2.png'],
+                         890, 570, 310, print, None)
+    x = BaseLevelClass(['spider_pole.png'], ['piano_fon.mp3'],
+                       [[pautina, 0], [pautina2, 0], [pautina3, 0], [bug, 0], [spider, 0]],
+                       screen, True)
+    pautina.function = x.change_screen_off
+    x.draw_level()
+    while running:
+        screen.fill((0, 0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            x.all_sprites.update(event)
+        x.draw_level()
+        clock.tick(fps)
+        pygame.display.flip()
+    pygame.quit()
