@@ -231,8 +231,10 @@ class Graph(pygame.sprite.Sprite):
                 else:
                     return True
 
+
 class Spider:
     pass
+
 
 if __name__ == '__main__':
     sx, sy = 50, 350  # координаты начала

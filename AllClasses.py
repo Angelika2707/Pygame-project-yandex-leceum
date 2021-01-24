@@ -219,15 +219,14 @@ class DialogSprite(Sprite):
 
     def update(self, *args):
         self.i += 1
-        if args[0].type == pygame.MOUSEBUTTONDOWN and \
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                 self.sprite.rect.collidepoint(args[0].pos):
             self.can = True
             self.i = 0
-        if self.can:
-            if self.i > 30:
-                self.can = False
-                self.function(self.ind)
-                self.i = 0
+        if self.i > 30:
+            self.can = False
+            self.function(self.ind)
+            self.i = 0
 
 
 class Item(AnimatedButton):
