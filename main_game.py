@@ -49,7 +49,7 @@ if __name__ == '__main__':
                                         1480, 550, print, 'button_sound.ogg', True, 8)
     button_left_level = AnimatedButton(['button_right.png'],
                                        300, 550, print, 'button_sound.ogg', True, 7)
-    # door_exit_level
+
     door_exit_level = AnimatedButton(['door_exit_level.png'], 750, 270, print, 'button_sound.ogg', True, 35)
     button1 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 1)
     button2 = AnimatedButton(['кнопка_сейфа.png'], 870, 450, print, 'safe_click.wav', True, 2)
