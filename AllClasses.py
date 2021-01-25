@@ -141,6 +141,7 @@ class BaseLevelClass:
     def start_background_music(self):
         fullname = os.path.join('Music', self.fon_music[0])
         mus = pygame.mixer.Sound(fullname)
+        mus.set_volume(0.25)
         mus.play(-1)
 
     def draw_level(self):
@@ -534,3 +535,33 @@ class Spider(AnimatedButton):
                                     self.all_sprites.remove(self)
                                     self.kill()
                                     time.sleep(1)
+
+
+class Safe(Sprite):
+    def __init__(self, images, x, y, buttons):
+        self.buttons = buttons
+        super().__init__(images, x, y)
+        self.images = images
+        self.code = [1, 2, 3, 4]
+        self.current_code = []
+
+    def update(self, *args):
+        if len(self.current_code) == 4 and self.current_code != self.code:
+            self.current_code = []
+            self.img_count = 0
+        elif self.current_code == self.code:
+            print('да')
+            self.img_count = -1
+        else:
+            print('я')
+            self.img_count = len(self.current_code)
+        self.image = self.load_image(self.images[self.img_count])
+
+    def add_number(self, i):
+        self.current_code.append(i)
+        print(self.current_code)
+
+    def init(self):
+        for i in self.buttons:
+            i.function = self.add_number
+

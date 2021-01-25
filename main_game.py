@@ -1,5 +1,5 @@
 import pygame
-from AllClasses import BaseLevelClass, AnimatedButton, Sprite, SwitchButton, DialogSprite
+from AllClasses import BaseLevelClass, AnimatedButton, Sprite, SwitchButton, DialogSprite, Safe
 
 if __name__ == '__main__':
     pygame.init()
@@ -46,20 +46,25 @@ if __name__ == '__main__':
     door_go_to_level = AnimatedButton(['door_dialog_tab.png'],
                                       720, 200, print, None, True, 7)
     button_right_level = AnimatedButton(['button_left.png'],
-                                   1480, 550, print, 'button_sound.ogg', True, 8)
+                                        1480, 550, print, 'button_sound.ogg', True, 8)
     button_left_level = AnimatedButton(['button_right.png'],
-                                        300, 550, print, 'button_sound.ogg', True, 7)
+                                       300, 550, print, 'button_sound.ogg', True, 7)
     # door_exit_level
     door_exit_level = AnimatedButton(['door_exit_level.png'], 750, 270, print, 'button_sound.ogg', True, 35)
+    button1 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 1)
+    buttons = [button1]
+    delet = Safe(
+        ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png', 'cейф_пароль_3.png', 'cейф_пароль_4.png',
+         'cейф_окрыт.png'], 700, 300, buttons)
+    delet.init()
     safe = AnimatedButton(['сейф2.png'], 360, 445, print, 'button_sound.ogg', True, 10)
     help_page = AnimatedButton(['подсказка_2.png'], 1270, 590, print, 'button_sound.ogg', True, 11)
     page_room_tab = AnimatedButton(['page_room_tab.png'],
-                                       460, 270, print, 'button_sound.ogg', True, 9)
+                                   460, 270, print, 'button_sound.ogg', True, 9)
     door2 = AnimatedButton(['door_number2.png'],
                            700, 310, print, None, True, 6)
     door1 = AnimatedButton(['door_number2.png'],
                            1150, 310, print, None, True, 5)
-    delet = AnimatedButton(['cейф_пароль_0.png'], 700, 300, print, None)
     button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
     dialog_door_level = DialogSprite(['room_dialog.png'], 400, 100, print, door_exit_level, 35)
     rabbit_dialog = DialogSprite(['image.png'], 500, 100, print, spite1, 8)
@@ -78,8 +83,9 @@ if __name__ == '__main__':
          [button_go_to_lift, 0], [button_dowm, 2], [buttons_in_lift, 2], [buttons_hall, 3], [door3, 4],
          [button_dowm2, 5], [door2, 4], [door1, 4], [button_dialog_door, -1], [door3_dil, 5], [button_dowm2, 6],
          [door_go_to_level, 6], [button_right_level, 7], [button_left_level, 8], [page_room_tab, 7], [button_dowm3, 9],
-         [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8], [dialog_door_level, -1],
-         [delet, 10]],
+         [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
+         [dialog_door_level, -1],
+         [delet, 10], [button1, 10]],
         screen)
 
     x.draw_level()
