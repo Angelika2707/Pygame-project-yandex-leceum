@@ -52,10 +52,16 @@ if __name__ == '__main__':
     # door_exit_level
     door_exit_level = AnimatedButton(['door_exit_level.png'], 750, 270, print, 'button_sound.ogg', True, 35)
     button1 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 1)
-    buttons = [button1]
-    delet = Safe(
-        ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png', 'cейф_пароль_3.png', 'cейф_пароль_4.png',
-         'cейф_окрыт.png'], 700, 300, buttons)
+    button2 = AnimatedButton(['кнопка_сейфа.png'], 870, 450, print, 'safe_click.wav', True, 2)
+    button3 = AnimatedButton(['кнопка_сейфа.png'], 1040, 450, print, 'safe_click.wav', True, 3)
+    button4 = AnimatedButton(['кнопка_сейфа.png'], 700, 540, print, 'safe_click.wav', True, 4)
+    button5 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 5)
+    button6 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 6)
+    button7 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 7)
+    button8 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 8)
+    button9 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 9)
+    buttons = [button1, button2, button3, button4, button5, button6, button7, button8, button9]
+    delet = Safe(700, 300, buttons)
     delet.init()
     safe = AnimatedButton(['сейф2.png'], 360, 445, print, 'button_sound.ogg', True, 10)
     help_page = AnimatedButton(['подсказка_2.png'], 1270, 590, print, 'button_sound.ogg', True, 11)
@@ -84,8 +90,7 @@ if __name__ == '__main__':
          [button_dowm2, 5], [door2, 4], [door1, 4], [button_dialog_door, -1], [door3_dil, 5], [button_dowm2, 6],
          [door_go_to_level, 6], [button_right_level, 7], [button_left_level, 8], [page_room_tab, 7], [button_dowm3, 9],
          [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
-         [dialog_door_level, -1],
-         [delet, 10], [button1, 10]],
+         [dialog_door_level, -1], [delet, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10]],
         screen)
 
     x.draw_level()
