@@ -1,5 +1,40 @@
 import pygame
-from AllClasses import BaseLevelClass, AnimatedButton, Sprite, SwitchButton, DialogSprite, Safe
+from AllClasses import BaseLevelClass, AnimatedButton, Sprite, SwitchButton, DialogSprite, Safe, Spider, Node, Edge, \
+    Graph
+
+
+def game_spider():
+    sx, sy = 500, 480  # координаты начала
+    # создание точек, (x,y) - координаты, остальное - название, чтобы удобно печаталось
+    A = Node(sx + 0, sy - 0, 'A', 'spider')
+    B = Node(sx + 300, sy - 300, 'B')
+    C = Node(sx + 300, sy - 0, 'C')
+    D = Node(sx + 600, sy + 300, 'D')
+    E = Node(sx + 600, sy - 300, 'E')
+    F = Node(sx + 900, sy - 0, 'F', 'bug')
+    M = Node(sx + 600, sy - 0, 'M')
+    N = Node(sx + 0, sy + 300, 'N')
+
+    AB = Edge(A, B, 'r')
+    BE = Edge(B, E, 'g')
+    ME = Edge(M, E, 'v')
+    MF = Edge(M, F, 'g')
+    DF = Edge(D, F, 'r')
+    DC = Edge(D, C, 'l')
+    AC = Edge(A, C, 'g')
+    CB = Edge(C, B, 'v')
+    CM = Edge(C, M, 'g')
+    NC = Edge(N, C, 'r')
+    NA = Edge(N, A, 'v')
+
+    G = Graph()  # создание графа, тут же и реализована игра
+    G.add_edges([AB, AC, BE, DC, ME, MF, DF, CB, CM, NA, NC])
+    fps = 60
+    clock = pygame.time.Clock()
+
+    result = G.start_game(screen, fps, clock)
+    print(result)
+
 
 if __name__ == '__main__':
     pygame.init()
@@ -55,15 +90,16 @@ if __name__ == '__main__':
     button2 = AnimatedButton(['кнопка_сейфа.png'], 870, 450, print, 'safe_click.wav', True, 2)
     button3 = AnimatedButton(['кнопка_сейфа.png'], 1040, 450, print, 'safe_click.wav', True, 3)
     button4 = AnimatedButton(['кнопка_сейфа.png'], 700, 540, print, 'safe_click.wav', True, 4)
-    button5 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 5)
-    button6 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 6)
-    button7 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 7)
-    button8 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 8)
-    button9 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 9)
-    buttons = [button1, button2, button3, button4, button5, button6, button7, button8, button9]
-    delet = Safe(700, 300, buttons)
-    delet.init()
+    button5 = AnimatedButton(['кнопка_сейфа.png'], 870, 540, print, 'safe_click.wav', True, 5)
+    button6 = AnimatedButton(['кнопка_сейфа.png'], 1040, 540, print, 'safe_click.wav', True, 6)
+    button7 = AnimatedButton(['кнопка_сейфа.png'], 700, 630, print, 'safe_click.wav', True, 7)
+    button8 = AnimatedButton(['кнопка_сейфа.png'], 870, 630, print, 'safe_click.wav', True, 8)
+    button9 = AnimatedButton(['кнопка_сейфа.png'], 1040, 630, print, 'safe_click.wav', True, 9)
+    button0 = AnimatedButton(['кнопка_сейфа.png'], 870, 715, print, 'safe_click.wav', True, 0)
+    buttons = [button1, button2, button3, button4, button5, button6, button7, button8, button9, button0]
     safe = AnimatedButton(['сейф2.png'], 360, 445, print, 'button_sound.ogg', True, 10)
+    delet = Safe(700, 300, buttons, safe)
+    delet.init()
     help_page = AnimatedButton(['подсказка_2.png'], 1270, 590, print, 'button_sound.ogg', True, 11)
     page_room_tab = AnimatedButton(['page_room_tab.png'],
                                    460, 270, print, 'button_sound.ogg', True, 9)
@@ -71,6 +107,8 @@ if __name__ == '__main__':
                            700, 310, print, None, True, 6)
     door1 = AnimatedButton(['door_number2.png'],
                            1150, 310, print, None, True, 5)
+    spidor = AnimatedButton(['паутина.png'],
+                            1320, 130, print, None)
     button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
     dialog_door_level = DialogSprite(['room_dialog.png'], 400, 100, print, door_exit_level, 35)
     rabbit_dialog = DialogSprite(['image.png'], 500, 100, print, spite1, 8)
@@ -90,10 +128,13 @@ if __name__ == '__main__':
          [button_dowm2, 5], [door2, 4], [door1, 4], [button_dialog_door, -1], [door3_dil, 5], [button_dowm2, 6],
          [door_go_to_level, 6], [button_right_level, 7], [button_left_level, 8], [page_room_tab, 7], [button_dowm3, 9],
          [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
-         [dialog_door_level, -1], [delet, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10]],
+         [dialog_door_level, -1], [delet, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
+         [button5, 10],
+         [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spidor, 8]],
         screen)
 
     x.draw_level()
+    spidor.function = game_spider
     all_sprites2 = pygame.sprite.Group()
     all_sprites2.add(dialog_door_level)
     all_sprites2.add(rabbit_dialog)

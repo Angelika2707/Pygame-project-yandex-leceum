@@ -538,25 +538,30 @@ class Spider(AnimatedButton):
 
 
 class Safe(Sprite):
-    def __init__(self, x, y, buttons,
-                 images=None):
+    def __init__(self, x, y, buttons, safe, images=None):
         if images is None:
             images = ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png', 'cейф_пароль_3.png',
-                      'cейф_пароль_4.png', 'сейф_окрыт.png']
+                      'cейф_пароль_4.png', 'сейф_окрыт.png', 'сейф_открытый.png']
         self.buttons = buttons
         self.images = images
         self.code = [1, 2, 3, 4]
         self.current_code = []
+        self.safe = safe
+        self.can = True
         super().__init__(images, x, y)
 
     def update(self, *args):
-        if len(self.current_code) == 4 and self.current_code != self.code:
-            self.current_code = []
-            self.img_count = 0
-        elif self.current_code == self.code:
-            self.img_count = -1
-        else:
-            self.img_count = len(self.current_code)
+        if self.can:
+            if len(self.current_code) == 4 and self.current_code != self.code:
+                self.current_code = []
+                self.safe.img_count = 0
+            elif self.current_code == self.code:
+                self.safe.images[0] = 'сейф_открытый.png'
+                self.safe.image = self.safe.load_image('сейф_открытый.png')
+                self.img_count = -2
+                self.can = False
+            else:
+                self.img_count = len(self.current_code)
         self.image = self.load_image(self.images[self.img_count])
 
     def add_number(self, i):
