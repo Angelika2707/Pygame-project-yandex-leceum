@@ -535,3 +535,22 @@ class Spider(AnimatedButton):
                                     self.all_sprites.remove(self)
                                     self.kill()
                                     time.sleep(1)
+
+
+class Inventory:
+    def __init__(self):
+        self.objects = []
+
+    def append(self, name, image):
+        self.objects.append((name, image))
+
+    def delete_by_name(self, name):
+        for num, obj in enumerate(self.objects):
+            if obj[0] == name:
+                self.objects.pop(num)
+
+    def update(self):
+        pass
+
+    def __repr__(self):
+        return '|' + ', '.join(obj[0] for obj in self.objects) + '|'
