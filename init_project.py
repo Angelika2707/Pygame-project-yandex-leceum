@@ -1,7 +1,8 @@
+from AllClasses import AnimatedButton, Safe, DialogSprite, Edge, Node, Graph, BaseLevelClass
 import pygame
+
 pygame.init()
 
-from AllClasses import AnimatedButton, Safe, DialogSprite, Edge, Node, Graph, BaseLevelClass
 
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
@@ -81,7 +82,7 @@ turkey_dialog = DialogSprite(['turkey_dialog.png'], 500, 100, print, turkey, 12)
 pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
 all_sprites2 = pygame.sprite.Group()
 
-x = BaseLevelClass(
+main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
      'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png'],
     ['piano_fon.mp3'],
@@ -107,40 +108,40 @@ def init():
     all_sprites2.add(bird_dialog)
     all_sprites2.add(turkey_dialog)
     all_sprites2.add(pig_dialog)
-    dialog_door_level.function = x.change_screen_off
-    rabbit_dialog.function = x.change_screen_off
-    button_dialog_door.function = x.change_screen_off
-    deer_dialog.function = x.change_screen_off
-    pigion_dialog.function = x.change_screen_off
-    bird_dialog.function = x.change_screen_off
-    turkey_dialog.function = x.change_screen_off
-    pig_dialog.function = x.change_screen_off
-    button_right1.function = x.next_screen
-    button_right2.function = x.next_screen
-    button_right_level.function = x.next_screen
-    button_left_level.function = x.next_screen
-    safe.function = x.next_screen
-    button_dowm.function = x.next_screen
-    button_dowm2.function = x.next_screen
-    button_dowm3.function = x.next_screen
-    button_dowm4.function = x.next_screen
-    page_room_tab.function = x.next_screen
-    help_page.function = x.next_screen
-    door3.function = x.next_screen
-    door2.function = x.next_screen
-    door1.function = x.next_screen
-    button_go_to_lift.function = x.next_screen
-    door_go_to_level.function = x.next_screen
-    buttons_in_lift.function = x.next_screen
-    buttons_hall.function = x.next_screen
-    rabbit.function = x.change_screen_on
-    deer.function = x.change_screen_on
-    pig.function = x.change_screen_on
-    pigion.function = x.change_screen_on
-    turkey.function = x.change_screen_on
-    bird.function = x.change_screen_on
-    door3_dil.function = x.change_screen_on
-    door_exit_level.function = x.change_screen_on
+    dialog_door_level.function = main_game.change_screen_off
+    rabbit_dialog.function = main_game.change_screen_off
+    button_dialog_door.function = main_game.change_screen_off
+    deer_dialog.function = main_game.change_screen_off
+    pigion_dialog.function = main_game.change_screen_off
+    bird_dialog.function = main_game.change_screen_off
+    turkey_dialog.function = main_game.change_screen_off
+    pig_dialog.function = main_game.change_screen_off
+    button_right1.function = main_game.next_screen
+    button_right2.function = main_game.next_screen
+    button_right_level.function = main_game.next_screen
+    button_left_level.function = main_game.next_screen
+    safe.function = main_game.next_screen
+    button_dowm.function = main_game.next_screen
+    button_dowm2.function = main_game.next_screen
+    button_dowm3.function = main_game.next_screen
+    button_dowm4.function = main_game.next_screen
+    page_room_tab.function = main_game.next_screen
+    help_page.function = main_game.next_screen
+    door3.function = main_game.next_screen
+    door2.function = main_game.next_screen
+    door1.function = main_game.next_screen
+    button_go_to_lift.function = main_game.next_screen
+    door_go_to_level.function = main_game.next_screen
+    buttons_in_lift.function = main_game.next_screen
+    buttons_hall.function = main_game.next_screen
+    rabbit.function = main_game.change_screen_on
+    deer.function = main_game.change_screen_on
+    pig.function = main_game.change_screen_on
+    pigion.function = main_game.change_screen_on
+    turkey.function = main_game.change_screen_on
+    bird.function = main_game.change_screen_on
+    door3_dil.function = main_game.change_screen_on
+    door_exit_level.function = main_game.change_screen_on
 
 
 def game_spider():
