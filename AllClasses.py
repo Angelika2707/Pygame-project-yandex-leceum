@@ -571,3 +571,20 @@ class Safe(Sprite):
     def init(self):
         for i in self.buttons:
             i.function = self.add_number
+
+
+class LevelManager:
+    def __init__(self, levels):
+        self.levels = levels
+        self.current_level = self.levels[0]
+        self.level_count = 0
+
+    def change_level(self):
+        self.level_count += 1
+
+    def draw(self):
+        self.current_level.draw_level()
+
+    def init(self, l):
+        for i in l:
+            i.function = self.change_level
