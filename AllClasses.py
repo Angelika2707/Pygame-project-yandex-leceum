@@ -141,6 +141,7 @@ class BaseLevelClass:
     def start_background_music(self):
         fullname = os.path.join('Music', self.fon_music[0])
         mus = pygame.mixer.Sound(fullname)
+        mus.set_volume(0.25)
         mus.play(-1)
 
     def draw_level(self):
@@ -154,10 +155,10 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            if len(i[0].groups()) == 0:
-                for num, item in enumerate(self.objs_on_level):
-                    if i == item:
-                        self.objs_on_level.pop(num)
+            # if len(i[0].groups()) == 0:
+            #     for num, item in enumerate(self.objs_on_level):
+            #         if i == item:
+            #             self.objs_on_level.pop(num)
             if i[1] == self.num_of_screen:
                 self.all_sprites.add(i[0])
         self.all_sprites.draw(self.display)
@@ -219,15 +220,14 @@ class DialogSprite(Sprite):
 
     def update(self, *args):
         self.i += 1
-        if args[0].type == pygame.MOUSEBUTTONDOWN and \
+        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                 self.sprite.rect.collidepoint(args[0].pos):
             self.can = True
             self.i = 0
-        if self.can:
-            if self.i > 30:
-                self.can = False
-                self.function(self.ind)
-                self.i = 0
+        if self.i > 30:
+            self.can = False
+            self.function(self.ind)
+            self.i = 0
 
 
 class Item(AnimatedButton):
@@ -537,20 +537,54 @@ class Spider(AnimatedButton):
                                     time.sleep(1)
 
 
-class Inventory:
-    def __init__(self):
-        self.objects = []
+class Safe(Sprite):
+    def __init__(self, x, y, buttons, safe, images=None):
+        if images is None:
+            images = ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png', 'cейф_пароль_3.png',
+                      'cейф_пароль_4.png', 'сейф_окрыт.png', 'сейф_открытый.png']
+        self.buttons = buttons
+        self.images = images
+        self.code = [1, 2, 3, 4]
+        self.current_code = []
+        self.safe = safe
+        self.can = True
+        super().__init__(images, x, y)
 
-    def append(self, name, image):
-        self.objects.append((name, image))
+    def update(self, *args):
+        if self.can:
+            if len(self.current_code) == 4 and self.current_code != self.code:
+                self.current_code = []
+                self.safe.img_count = 0
+            elif self.current_code == self.code:
+                self.safe.images[0] = 'сейф_открытый.png'
+                self.safe.image = self.safe.load_image('сейф_открытый.png')
+                self.img_count = -2
+                self.can = False
+            else:
+                self.img_count = len(self.current_code)
+        self.image = self.load_image(self.images[self.img_count])
 
-    def delete_by_name(self, name):
-        for num, obj in enumerate(self.objects):
-            if obj[0] == name:
-                self.objects.pop(num)
+    def add_number(self, i):
+        self.current_code.append(i)
+        print(self.current_code)
 
-    def update(self):
-        pass
+    def init(self):
+        for i in self.buttons:
+            i.function = self.add_number
 
-    def __repr__(self):
-        return '|' + ', '.join(obj[0] for obj in self.objects) + '|'
+
+class LevelManager:
+    def __init__(self, levels):
+        self.levels = levels
+        self.current_level = self.levels[0]
+        self.level_count = 0
+
+    def change_level(self):
+        self.level_count += 1
+
+    def draw(self):
+        self.current_level.draw_level()
+
+    def init(self, l):
+        for i in l:
+            i.function = self.change_level
