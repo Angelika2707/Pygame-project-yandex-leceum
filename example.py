@@ -4,7 +4,7 @@ from AllClasses import BaseLevelClass, Spider
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 1000, 700
+    size = width, height = 1500, 700
     screen = pygame.display.set_mode(size)
     running = True
     fps = 60

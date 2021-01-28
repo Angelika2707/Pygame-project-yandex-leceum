@@ -1,4 +1,4 @@
-from AllClasses import AnimatedButton, Safe, DialogSprite, Edge, Node, Graph, BaseLevelClass
+from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass
 import pygame
 
 pygame.init()
@@ -6,7 +6,9 @@ pygame.init()
 
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
+clock = pygame.time.Clock()
 
+all_sprites2 = pygame.sprite.Group()
 rabbit = AnimatedButton(['vol2.png'],
                         470, 550, print, 'rabbit_sound.mp3', True, 8)
 deer = AnimatedButton(['m2.png'],
@@ -70,8 +72,13 @@ door2 = AnimatedButton(['door_number2.png'],
                        700, 310, print, None, True, 6)
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
-spidor = AnimatedButton(['паутина.png'],
-                        1320, 130, print, None)
+
+#spider = AnimatedButton(['паутина.png'],
+   #                     1320, 130, print, None)
+
+spider = Spider(name = 'тфьу', images = ['паутина.png'], x = 1320, y = 130, inventory = [],
+                all_sprites=all_sprites2, screen=screen, clock= clock)
+
 button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
 dialog_door_level = DialogSprite(['room_dialog.png'], 400, 100, print, door_exit_level, 35)
 rabbit_dialog = DialogSprite(['image.png'], 500, 100, print, rabbit, 8)
@@ -80,7 +87,7 @@ pigion_dialog = DialogSprite(['pigion_dialog.png'], 500, 100, print, pigion, 10)
 bird_dialog = DialogSprite(['bird_dialog.png'], 500, 100, print, bird, 11)
 turkey_dialog = DialogSprite(['turkey_dialog.png'], 500, 100, print, turkey, 12)
 pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
-all_sprites2 = pygame.sprite.Group()
+
 
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
@@ -94,12 +101,11 @@ main_game = BaseLevelClass(
      [door_go_to_level, 6], [button_right_level, 7], [button_left_level, 8], [page_room_tab, 7], [button_dowm3, 9],
      [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
      [dialog_door_level, -1], [safe_window, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
-     [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spidor, 8]],
+     [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8]],
     screen)
 
 
 def init():
-    spidor.function = game_spider
     all_sprites2.add(dialog_door_level)
     all_sprites2.add(rabbit_dialog)
     all_sprites2.add(button_dialog_door)
@@ -143,35 +149,3 @@ def init():
     door3_dil.function = main_game.change_screen_on
     door_exit_level.function = main_game.change_screen_on
 
-
-def game_spider():
-    sx, sy = 500, 480  # координаты начала
-    # создание точек, (x,y) - координаты, остальное - название, чтобы удобно печаталось
-    A = Node(sx + 0, sy - 0, 'A', 'spider')
-    B = Node(sx + 300, sy - 300, 'B')
-    C = Node(sx + 300, sy - 0, 'C')
-    D = Node(sx + 600, sy + 300, 'D')
-    E = Node(sx + 600, sy - 300, 'E')
-    F = Node(sx + 900, sy - 0, 'F', 'bug')
-    M = Node(sx + 600, sy - 0, 'M')
-    N = Node(sx + 0, sy + 300, 'N')
-
-    AB = Edge(A, B, 'r')
-    BE = Edge(B, E, 'g')
-    ME = Edge(M, E, 'v')
-    MF = Edge(M, F, 'g')
-    DF = Edge(D, F, 'r')
-    DC = Edge(D, C, 'l')
-    AC = Edge(A, C, 'g')
-    CB = Edge(C, B, 'v')
-    CM = Edge(C, M, 'g')
-    NC = Edge(N, C, 'r')
-    NA = Edge(N, A, 'v')
-
-    G = Graph()  # создание графа, тут же и реализована игра
-    G.add_edges([AB, AC, BE, DC, ME, MF, DF, CB, CM, NA, NC])
-    fps = 60
-    clock = pygame.time.Clock()
-
-    result = G.start_game(screen, fps, clock)
-    print(result)

@@ -149,18 +149,15 @@ class BaseLevelClass:
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
         if self.transform:
-            image1 = pygame.transform.scale(image, (1920, 1080))
+            image1 = pygame.transform.scale(image, (1366, 768))
         else:
             image1 = image
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            # if len(i[0].groups()) == 0:
-            #     for num, item in enumerate(self.objs_on_level):
-            #         if i == item:
-            #             self.objs_on_level.pop(num)
             if i[1] == self.num_of_screen:
                 self.all_sprites.add(i[0])
+
         self.all_sprites.draw(self.display)
 
     def next_screen(self, level):
@@ -271,7 +268,7 @@ class Node:
             return image
 
     def render(self, screen):
-        pygame.draw.ellipse(screen, (255, 0, 0), ((self.x - 30, self.y - 30), (60, 60)))
+        pygame.draw.ellipse(screen, (50, 50,50), ((self.x - 7, self.y - 7), (14, 14)))
         if self.item:
             image = self.load_image()
             size = image.get_size()
@@ -493,7 +490,7 @@ class Spider(AnimatedButton):
         self.all_sprites.add(self)
 
     def create_graph(self):
-        sx, sy = 50, 350  # координаты начала
+        sx, sy = 450, 550  # координаты начала
         # создание точек, (x,y) - координаты, остальное - название, чтобы удобно печаталось
         A = Node(sx + 0, sy - 0, 'A', 'spider')
         B = Node(sx + 300, sy - 300, 'B')
@@ -532,7 +529,10 @@ class Spider(AnimatedButton):
                             if mouse[1] <= self.rect.y + self.rect.height:
                                 if self.create_graph().start_game(self.screen, 60, self.clock):
                                     self.inventory.append(self.name)
-                                    self.all_sprites.remove(self)
+                                    while self in self.all_sprites:
+                                        self.all_sprites.remove(self)
+                                    for i in self.all_sprites:
+                                        print()
                                     self.kill()
                                     time.sleep(1)
 
