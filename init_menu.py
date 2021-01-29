@@ -8,9 +8,12 @@ def stop_music():
     if sound_music:
         pygame.mixer.pause()
         sound_music = False
+        main_menu.music_can = False
+
     else:
         pygame.mixer.unpause()
         sound_music = True
+        main_menu.music_can = True
 
 
 def stop_sound():
