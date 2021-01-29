@@ -1,9 +1,9 @@
 import pygame
-from init_project import main_menu, menu_init
+from init_menu import main_menu, init_menu, clock
 
-menu_init()
+init_menu()
 main_menu.draw_level()
-clock = pygame.time.Clock()
+
 if __name__ == '__main__':
     running = True
     while running:

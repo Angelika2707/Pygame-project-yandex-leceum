@@ -1,48 +1,12 @@
-from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass, Sprite, SwitchButton
+from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass
 import pygame
 
 pygame.init()
-# главное меню
-sound_music = True
-sound_sound = True
-screen = pygame.display.set_mode((1920, 1280))
 
-clock = pygame.time.Clock()
-start = AnimatedButton(['start.png'],
-                       490, 560, print, 'button_sound.ogg')
-settings = AnimatedButton(['settings.png'],
-                          490, 650, print, 'button_sound.ogg', True, 1)
-exit = AnimatedButton(['exit.png'],
-                      542, 712, exit, 'button_sound.ogg')
-main_name = Sprite(['main_name.png'],
-                   350, 190)
-settings_main = Sprite(['settings_main.png'],
-                       280, 150)
-back = AnimatedButton(['back.png'],
-                      200, 900, print, 'button_sound.ogg', True, 0)
-back_2 = AnimatedButton(['back.png'],
-                        200, 900, print, 'button_sound.ogg', True, 1)
-sound = SwitchButton(['sound2.png', 'sound.png'],
-                     530, 410, print, 'button_sound.ogg')
-music_switch = SwitchButton(['music_switch_button1.png', 'music_switch_button2.png'],
-                            600, 310, print, 'button_sound.ogg')
-music = Sprite(['music.png'],
-               150, 300)
-sound_main = Sprite(['sound_main.png'],
-                    350, 400)
-creators_text = Sprite(['creators_text.png'],
-                       350, 250)
-creators = AnimatedButton(['creators.png'],
-                          330, 490, print, 'button_sound.ogg', True, 2)
-main_menu = BaseLevelClass(['главной_фон2.png', 'главной_фон2.png', 'forest.jpg'], ['main_music3.ogg'],
-                           [[start, 0], [settings, 0], [exit, 0], [sound, 1], [music_switch, 1], [creators, 1],
-                            [back_2, 2], [main_name, 0], [settings_main, 1], [back, 1], [music, 1], [sound_main, 1],
-                            [creators_text, 2]],
-                           screen, True)
-# меню
-# игра
+
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
+clock = pygame.time.Clock()
 
 all_sprites2 = pygame.sprite.Group()
 rabbit = AnimatedButton(['vol2.png'],
@@ -109,11 +73,9 @@ door2 = AnimatedButton(['door_number2.png'],
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
 
-# spider = AnimatedButton(['паутина.png'],
-#                     1320, 130, print, None)
 
-spider = Spider(name='тфьу', images=['паутина.png'], x=1320, y=130, inventory=[],
-                all_sprites=all_sprites2, screen=screen, clock=clock)
+spider = Spider(name = 'тфьу', images = ['паутина.png'], x = 1320, y = 130, inventory = [],
+                all_sprites=all_sprites2, screen=screen, clock= clock)
 
 button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
 dialog_door_level = DialogSprite(['room_dialog.png'], 400, 100, print, door_exit_level, 35)
@@ -123,6 +85,7 @@ pigion_dialog = DialogSprite(['pigion_dialog.png'], 500, 100, print, pigion, 10)
 bird_dialog = DialogSprite(['bird_dialog.png'], 500, 100, print, bird, 11)
 turkey_dialog = DialogSprite(['turkey_dialog.png'], 500, 100, print, turkey, 12)
 pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
+
 
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
@@ -184,32 +147,3 @@ def init():
     door3_dil.function = main_game.change_screen_on
     door_exit_level.function = main_game.change_screen_on
 
-
-# игра
-def stop_music():
-    global sound_music
-    if sound_music:
-        pygame.mixer.pause()
-        sound_music = False
-    else:
-        pygame.mixer.unpause()
-        sound_music = True
-
-
-def stop_sound():
-    global sound_sound
-    if sound_sound:
-        pygame.mixer.music.set_volume(0)
-        sound_sound = False
-    else:
-        pygame.mixer.music.set_volume(1.0)
-        sound_sound = True
-
-
-def menu_init():
-    settings.function = main_menu.next_screen
-    back.function = main_menu.next_screen
-    creators.function = main_menu.next_screen
-    back_2.function = main_menu.next_screen
-    music_switch.function = stop_music
-    sound.function = stop_sound
