@@ -3,7 +3,6 @@ import pygame
 
 pygame.init()
 
-
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
@@ -39,6 +38,8 @@ buttons_in_lift = AnimatedButton(['buttons_in_lift.png'],
                                  1480, 480, print, 'button_sound.ogg', True, 3)
 buttons_hall = AnimatedButton(['экран.png'],
                               0, 0, print, 'button_sound.ogg', True, 4)
+first_panel = AnimatedButton(['экран.png'],
+                             0, 0, print, 'button_sound.ogg', True, 0)
 door3 = AnimatedButton(['door_number3.png'],
                        900, 430, print, None, True, 5)
 door3_dil = AnimatedButton(['door_dialog_tab.png'],
@@ -73,9 +74,8 @@ door2 = AnimatedButton(['door_number2.png'],
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
 
-
-spider = Spider(name = 'тфьу', images = ['паутина.png'], x = 1320, y = 130, inventory = [],
-                all_sprites=all_sprites2, screen=screen, clock= clock)
+spider = Spider(name='тфьу', images=['паутина.png'], x=1320, y=130, inventory=[],
+                all_sprites=all_sprites2, screen=screen, clock=clock)
 
 button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
 dialog_door_level = DialogSprite(['room_dialog.png'], 400, 100, print, door_exit_level, 35)
@@ -86,10 +86,9 @@ bird_dialog = DialogSprite(['bird_dialog.png'], 500, 100, print, bird, 11)
 turkey_dialog = DialogSprite(['turkey_dialog.png'], 500, 100, print, turkey, 12)
 pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
 
-
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
-     'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png'],
+     'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png', 'inf2.png'],
     ['piano_fon.mp3'],
     [[rabbit, 0], [deer, 0], [pig, 1], [button_right1, 0], [button_right2, 1],
      [pigion, 0], [turkey, 1], [bird, 1], [rabbit_dialog, -1], [deer_dialog, -1],
@@ -99,8 +98,10 @@ main_game = BaseLevelClass(
      [door_go_to_level, 6], [button_right_level, 7], [button_left_level, 8], [page_room_tab, 7], [button_dowm3, 9],
      [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
      [dialog_door_level, -1], [safe_window, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
-     [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8]],
+     [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8],
+     [first_panel, 12]],
     screen)
+main_game.num_of_screen = 12
 
 
 def init():
@@ -122,6 +123,7 @@ def init():
     pig_dialog.function = main_game.change_screen_off
     button_right1.function = main_game.next_screen
     button_right2.function = main_game.next_screen
+    first_panel.function = main_game.next_screen
     button_right_level.function = main_game.next_screen
     button_left_level.function = main_game.next_screen
     safe.function = main_game.next_screen
@@ -146,4 +148,3 @@ def init():
     bird.function = main_game.change_screen_on
     door3_dil.function = main_game.change_screen_on
     door_exit_level.function = main_game.change_screen_on
-
