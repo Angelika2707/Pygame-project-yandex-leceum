@@ -24,20 +24,32 @@ button_right1 = AnimatedButton(['button_left.png'],
                                1600, 550, print, 'button_sound.ogg', True, 1)
 button_right2 = AnimatedButton(['button_right.png'],
                                300, 550, print, 'button_sound.ogg', True, 0)
+button_left_level_2 = AnimatedButton(['button_left.png'],
+                                     1480, 550, print, 'button_sound.ogg', True, 13)
+button_right_level_3 = AnimatedButton(['button_right.png'],
+                                      300, 550, print, 'button_sound.ogg', True, 8)
 button_dowm = AnimatedButton(['button_down.png'],
                              900, 900, print, 'button_sound.ogg', True, 0)
+safe_second_tab = AnimatedButton(['safe_second_tab.png'],
+                                 810, 510, print, None, True, 14)
 button_dowm2 = AnimatedButton(['button_down.png'],
                               920, 900, print, 'button_sound.ogg', True, 4)
 button_dowm3 = AnimatedButton(['button_down.png'],
                               920, 900, print, 'button_sound.ogg', True, 7)
 button_dowm4 = AnimatedButton(['button_down.png'],
                               870, 900, print, 'button_sound.ogg', True, 7)
+button_dowm5 = AnimatedButton(['button_down.png'],
+                              870, 890, print, 'button_sound.ogg', True, 13)
+button_dowm6 = AnimatedButton(['button_down.png'],
+                              870, 890, print, 'button_sound.ogg', True, 8)
 button_go_to_lift = AnimatedButton(['go_to_lift.png'],
                                    850, 550, print, 'button_sound.ogg', True, 2)
 buttons_in_lift = AnimatedButton(['buttons_in_lift.png'],
                                  1480, 480, print, 'button_sound.ogg', True, 3)
 buttons_hall = AnimatedButton(['экран.png'],
                               0, 0, print, 'button_sound.ogg', True, 4)
+butter_fly = AnimatedButton(['бабочки.png'],
+                            480, 420, print, 'button_sound.ogg', True, 15)
 first_panel = AnimatedButton(['экран.png'],
                              0, 0, print, 'button_sound.ogg', True, 0)
 door3 = AnimatedButton(['door_number3.png'],
@@ -88,7 +100,8 @@ pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
 
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
-     'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png', 'inf2.png'],
+     'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png', 'inf2.png', 'км3.png',
+     'safe_second.png', 'км2_,бабочки.png'],
     ['piano_fon.mp3'],
     [[rabbit, 0], [deer, 0], [pig, 1], [button_right1, 0], [button_right2, 1],
      [pigion, 0], [turkey, 1], [bird, 1], [rabbit_dialog, -1], [deer_dialog, -1],
@@ -99,7 +112,8 @@ main_game = BaseLevelClass(
      [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
      [dialog_door_level, -1], [safe_window, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
      [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8],
-     [first_panel, 12]],
+     [first_panel, 12], [button_left_level_2, 8], [button_right_level_3, 13], [safe_second_tab, 13],
+     [button_dowm5, 14], [butter_fly, 8], [button_dowm6, 15]],
     screen)
 main_game.num_of_screen = 12
 
@@ -127,12 +141,19 @@ def init():
     button_right_level.function = main_game.next_screen
     button_left_level.function = main_game.next_screen
     safe.function = main_game.next_screen
+    button_left_level_2.function = main_game.next_screen
+    button_right_level_3.function = main_game.next_screen
     button_dowm.function = main_game.next_screen
     button_dowm2.function = main_game.next_screen
     button_dowm3.function = main_game.next_screen
     button_dowm4.function = main_game.next_screen
+    button_dowm5.function = main_game.next_screen
+    button_dowm6.function = main_game.next_screen
     page_room_tab.function = main_game.next_screen
     help_page.function = main_game.next_screen
+    butter_fly.function = main_game.next_screen
+    safe_second_tab.function = main_game.next_screen
+    button_dowm.function = main_game.next_screen
     door3.function = main_game.next_screen
     door2.function = main_game.next_screen
     door1.function = main_game.next_screen
