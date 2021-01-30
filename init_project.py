@@ -43,7 +43,7 @@ first_panel = AnimatedButton(['экран.png'],
 door3 = AnimatedButton(['door_number3.png'],
                        900, 430, print, None, True, 5)
 door3_dil = AnimatedButton(['door_dialog_tab.png'],
-                           720, 200, print, None, True, 22)
+                           720, 200, print, 'knok.mp3', True, 22)
 door_go_to_level = AnimatedButton(['door_dialog_tab.png'],
                                   720, 200, print, None, True, 7)
 button_right_level = AnimatedButton(['button_left.png'],

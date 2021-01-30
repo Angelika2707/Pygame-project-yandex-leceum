@@ -220,15 +220,11 @@ class DialogSprite(Sprite):
         self.can = False
 
     def update(self, *args):
-        self.i += 1
-        if args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-                self.sprite.rect.collidepoint(args[0].pos):
-            self.can = True
-            self.i = 0
-        if self.i > 30:
-            self.can = False
+        MYEVENTTYPE = pygame.USEREVENT + 1
+        pygame.time.set_timer(MYEVENTTYPE, 3000)
+        if args[0].type == MYEVENTTYPE:
             self.function(self.ind)
-            self.i = 0
+            print("Мое событие сработало")
 
 
 class Item(AnimatedButton):
