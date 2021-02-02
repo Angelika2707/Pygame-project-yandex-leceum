@@ -112,10 +112,9 @@ door2 = AnimatedButton(['door_number2.png'],
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
 knife = AnimatedButton(['knife2.png'],
-                       450, 750, print, None, True, 5)
+                       450, 750, print, None)
 
-end = AnimatedButton(['экран.png'],
-                              0, 0, print, 'button_sound.ogg', True, 4)
+end = AnimatedButton(['экран.png'], 0, 0, print, 'button_sound.ogg', True, 17)
 
 spider = Spider(name=item1, images=['паутина.png'], x=1320, y=130, inventory=inventory,
                 all_sprites=all_sprites2, screen=screen, clock=clock)
@@ -132,7 +131,7 @@ pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
      'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png', 'inf2.png', 'км3.png',
-     'safe_second.png', 'км2_,бабочки.png', 'сейф_окно_открыто.png'],
+     'safe_second.png', 'км2_,бабочки.png', 'сейф_окно_открыто.png', 'end.png'],
     ['piano_fon.mp3'],
     [[rabbit, 0], [deer, 0], [pig, 1], [button_right1, 0], [button_right2, 1],
      [pigion, 0], [turkey, 1], [bird, 1], [rabbit_dialog, -1], [deer_dialog, -1],
@@ -144,12 +143,13 @@ main_game = BaseLevelClass(
      [dialog_door_level, -1], [safe_window, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
      [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8],
      [first_panel, 12], [button_left_level_2, 8], [button_right_level_3, 13], [safe_second_tab, 13],
-     [button_dowm5, 14], [butter_fly, 8], [button_dowm6, 15], [safe_second, 14], [knife, 16]],
+     [button_dowm5, 14], [butter_fly, 8], [button_dowm6, 15], [safe_second, 14], [knife, 16], [end, 16]],
     screen)
 main_game.num_of_screen = 12
 
 
 def init():
+    end.function = main_game.next_screen
     safe_window.baze = main_game
     item1.function = main_game.change_screen_off
     all_sprites2.add(dialog_door_level)

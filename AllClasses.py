@@ -134,23 +134,26 @@ class BaseLevelClass:
         self.objs_on_level = objs_on_level
         self.num_of_screen = 0
         self.display = display
-        self.start_background_music()
         self.n = 1
         self.transform = transform
+        fullname = os.path.join('Music', self.fon_music[0])
+        self.mus = pygame.mixer.Sound(fullname)
+        self.music_can = True
 
     def start_background_music(self):
-        fullname = os.path.join('Music', self.fon_music[0])
-        mus = pygame.mixer.Sound(fullname)
-        mus.set_volume(0.25)
-        mus.set_volume(0.25)
-        mus.play(-1)
+        self.mus.set_volume(0.25)
+        self.mus.set_volume(0.25)
+        self.mus.play(-1)
+
+    def stop_background_music(self):
+        self.mus.stop()
 
     def draw_level(self):
         self.all_sprites = pygame.sprite.Group()
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
         if self.transform:
-            image1 = pygame.transform.scale(image, (1366, 768))
+            image1 = pygame.transform.scale(image, (1920, 1080))
         else:
             image1 = image
         background_rect = image1.get_rect()
@@ -581,13 +584,23 @@ class Safe(Sprite):
 
 
 class LevelManager:
-    def __init__(self, levels):
+    def __init__(self, levels, inits):
         self.levels = levels
         self.current_level = self.levels[0]
         self.level_count = 0
+        self.inits = inits
+        self.current_level.start_background_music()
+        self.can_music = self.current_level.music_can
+        print(self.can_music)
 
     def change_level(self):
+        self.current_level.mus.stop()
         self.level_count += 1
+        self.can_music = self.current_level.music_can
+        self.current_level = self.levels[self.level_count]
+        if self.can_music:
+            self.current_level.start_background_music()
+        self.init_project()
 
     def draw(self):
         self.current_level.draw_level()
@@ -595,6 +608,12 @@ class LevelManager:
     def init(self, l):
         for i in l:
             i.function = self.change_level
+
+    def init_project(self):
+        if self.level_count == 0:
+            self.inits[0]()
+        else:
+            self.inits[1]()
 
 
 class Inventory(pygame.sprite.Sprite):
