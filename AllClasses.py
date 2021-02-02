@@ -142,6 +142,7 @@ class BaseLevelClass:
         fullname = os.path.join('Music', self.fon_music[0])
         mus = pygame.mixer.Sound(fullname)
         mus.set_volume(0.25)
+        mus.set_volume(0.25)
         mus.play(-1)
 
     def draw_level(self):
@@ -155,7 +156,7 @@ class BaseLevelClass:
         background_rect = image1.get_rect()
         self.display.blit(image1, background_rect)
         for i in self.objs_on_level:
-            if i[1] == self.num_of_screen:
+            if i[1] == self.num_of_screen and i[0] not in self.all_sprites:
                 self.all_sprites.add(i[0])
 
         self.all_sprites.draw(self.display)
@@ -245,9 +246,13 @@ class Item(AnimatedButton):
                     if mouse[1] >= self.rect.y:
                         if mouse[0] <= self.rect.x + self.rect.width:
                             if mouse[1] <= self.rect.y + self.rect.height:
-                                self.inventory.append(self.name)
+                                self.inventory.append(self)
                                 self.all_sprites.remove(self)
+                                # print(self.all_sprites)
                                 self.kill()
+
+    def __repr__(self):
+        return str(self.name)
 
 
 class Node:
@@ -268,7 +273,7 @@ class Node:
             return image
 
     def render(self, screen):
-        pygame.draw.ellipse(screen, (50, 50,50), ((self.x - 7, self.y - 7), (14, 14)))
+        pygame.draw.ellipse(screen, (50, 50, 50), ((self.x - 7, self.y - 7), (14, 14)))
         if self.item:
             image = self.load_image()
             size = image.get_size()
@@ -540,7 +545,8 @@ class Spider(AnimatedButton):
 class Safe(Sprite):
     def __init__(self, x, y, buttons, safe, images=None):
         if images is None:
-            images = ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png', 'cейф_пароль_3.png',
+            images = ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png',
+                      'cейф_пароль_3.png',
                       'cейф_пароль_4.png', 'сейф_окрыт.png', 'сейф_открытый.png']
         self.buttons = buttons
         self.images = images
@@ -588,3 +594,53 @@ class LevelManager:
     def init(self, l):
         for i in l:
             i.function = self.change_level
+
+
+class Inventory(pygame.sprite.Sprite):
+    def __init__(self, screen):
+        super().__init__()
+        self.screen = screen
+        self.inventory = []
+
+    def append(self, object):
+        if type(object) == Item:
+            self.inventory.append(object)
+        else:
+            print(f'Неверный тип объекта {type(object)}')
+
+    def load_image(self, name):
+        # удалить на релизе
+        fullname = os.path.join('Images', name)
+        if not os.path.isfile(fullname):
+            print(f"Файл с изображением '{fullname}' не найден")
+            sys.exit()
+        #  выше блок кода
+        image = pygame.image.load(fullname)
+        return image
+
+    def update(self, *args, **kwargs):
+        screen = self.screen
+
+        start_x, start_y = 500, 50
+        cell_size, indent = 200, 20
+
+        for num, object in enumerate(self.inventory):
+            object: Item
+            image = self.load_image(object.images[0])
+            size = image.get_size()
+            k = size[0]/size[1]
+            if size[0] > size[1]:
+                image = pygame.transform.scale(image, (cell_size, int(cell_size/k)))
+            else:
+                image = pygame.transform.scale(image, (int(cell_size / k), cell_size))
+
+            screen.blit(image, (start_x, start_y + (cell_size + indent) * num))
+
+    def clear(self):
+        self.inventory = []
+
+    def delete(self, item):
+        self.inventory.pop(self.inventory.index(item))
+
+    def __repr__(self):
+        return '|' + '; '.join(str(i.name) for i in self.inventory) + '|'
