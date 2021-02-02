@@ -1,7 +1,15 @@
-from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass
+from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass, Inventory, Item
 import pygame
 
 pygame.init()
+
+
+def open_safe_second():
+    if inventory.inventory:
+        main_game.wallpapers[14] = 'safe_second_open.png'
+        main_game.wallpapers[13] = 'км3_open.png'
+        inventory.inventory.clear()
+
 
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
@@ -62,6 +70,24 @@ button_right_level = AnimatedButton(['button_left.png'],
                                     1480, 550, print, 'button_sound.ogg', True, 8)
 button_left_level = AnimatedButton(['button_right.png'],
                                    300, 550, print, 'button_sound.ogg', True, 7)
+safe_second = AnimatedButton(['safe_tab.png'],
+                             600, 360, open_safe_second, 'button_sound.ogg')
+#
+inventory = Inventory(screen)
+
+parameters1 = {
+    'name': 'music',
+    'images': ['key.png'],
+    'x': 400,
+    'y': 200,
+    'inventory': inventory,
+    'all_sprites': all_sprites2,
+    'ind': 55
+}
+
+item1 = Item(**parameters1)
+#
+
 
 door_exit_level = AnimatedButton(['door_exit_level.png'], 750, 270, print, 'button_sound.ogg', True, 35)
 button1 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 1)
@@ -85,8 +111,13 @@ door2 = AnimatedButton(['door_number2.png'],
                        700, 310, print, None, True, 6)
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
+knife = AnimatedButton(['knife2.png'],
+                       450, 750, print, None, True, 5)
 
-spider = Spider(name='тфьу', images=['паутина.png'], x=1320, y=130, inventory=[],
+end = AnimatedButton(['экран.png'],
+                              0, 0, print, 'button_sound.ogg', True, 4)
+
+spider = Spider(name=item1, images=['паутина.png'], x=1320, y=130, inventory=inventory,
                 all_sprites=all_sprites2, screen=screen, clock=clock)
 
 button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
@@ -101,7 +132,7 @@ pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
      'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png', 'inf2.png', 'км3.png',
-     'safe_second.png', 'км2_,бабочки.png'],
+     'safe_second.png', 'км2_,бабочки.png', 'сейф_окно_открыто.png'],
     ['piano_fon.mp3'],
     [[rabbit, 0], [deer, 0], [pig, 1], [button_right1, 0], [button_right2, 1],
      [pigion, 0], [turkey, 1], [bird, 1], [rabbit_dialog, -1], [deer_dialog, -1],
@@ -113,12 +144,14 @@ main_game = BaseLevelClass(
      [dialog_door_level, -1], [safe_window, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
      [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8],
      [first_panel, 12], [button_left_level_2, 8], [button_right_level_3, 13], [safe_second_tab, 13],
-     [button_dowm5, 14], [butter_fly, 8], [button_dowm6, 15]],
+     [button_dowm5, 14], [butter_fly, 8], [button_dowm6, 15], [safe_second, 14], [knife, 16]],
     screen)
 main_game.num_of_screen = 12
 
 
 def init():
+    safe_window.baze = main_game
+    item1.function = main_game.change_screen_off
     all_sprites2.add(dialog_door_level)
     all_sprites2.add(rabbit_dialog)
     all_sprites2.add(button_dialog_door)

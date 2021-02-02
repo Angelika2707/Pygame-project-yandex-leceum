@@ -229,12 +229,14 @@ class DialogSprite(Sprite):
 
 
 class Item(AnimatedButton):
-    def __init__(self, name, images, x, y, inventory, all_sprites, sound=None, level=0):
+    def __init__(self, name, images, x, y, inventory, all_sprites, function=None, ind=0, sound=None, level=0):
         super().__init__(images, x, y, None, sound=None, go_to=False, level=0)
         self.name = name
         self.inventory = inventory
         self.all_sprites = all_sprites
         self.all_sprites.add(self)
+        self.function = function
+        self.ind = ind
 
     def update(self, *args):
         super().update()
@@ -248,7 +250,8 @@ class Item(AnimatedButton):
                             if mouse[1] <= self.rect.y + self.rect.height:
                                 self.inventory.append(self)
                                 self.all_sprites.remove(self)
-                                # print(self.all_sprites)
+                                if self.function:
+                                    self.function(self.ind)
                                 self.kill()
 
     def __repr__(self):
@@ -543,7 +546,7 @@ class Spider(AnimatedButton):
 
 
 class Safe(Sprite):
-    def __init__(self, x, y, buttons, safe, images=None):
+    def __init__(self, x, y, buttons, safe, images=None, baze=None):
         if images is None:
             images = ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png',
                       'cейф_пароль_3.png',
@@ -554,6 +557,7 @@ class Safe(Sprite):
         self.current_code = []
         self.safe = safe
         self.can = True
+        self.baze = baze
         super().__init__(images, x, y)
 
     def update(self, *args):
@@ -562,10 +566,7 @@ class Safe(Sprite):
                 self.current_code = []
                 self.safe.img_count = 0
             elif self.current_code == self.code:
-                self.safe.images[0] = 'сейф_открытый.png'
-                self.safe.image = self.safe.load_image('сейф_открытый.png')
-                self.img_count = -2
-                self.can = False
+                self.baze.next_screen(16)
             else:
                 self.img_count = len(self.current_code)
         self.image = self.load_image(self.images[self.img_count])
@@ -621,18 +622,19 @@ class Inventory(pygame.sprite.Sprite):
     def update(self, *args, **kwargs):
         screen = self.screen
 
-        start_x, start_y = 500, 50
-        cell_size, indent = 200, 20
+        start_x, start_y = 1590, 220
+        cell_size, indent = 100, 23
 
         for num, object in enumerate(self.inventory):
             object: Item
             image = self.load_image(object.images[0])
-            size = image.get_size()
-            k = size[0]/size[1]
-            if size[0] > size[1]:
-                image = pygame.transform.scale(image, (cell_size, int(cell_size/k)))
-            else:
-                image = pygame.transform.scale(image, (int(cell_size / k), cell_size))
+            # size = image.get_size()
+            image = pygame.transform.scale(image, (80, 80))
+            # k = size[0] / size[1]
+            # if size[0] > size[1]:
+            #     image = pygame.transform.scale(image, (cell_size, int(cell_size / k)))
+            # else:
+            #     image = pygame.transform.scale(image, (int(cell_size / k), cell_size))
 
             screen.blit(image, (start_x, start_y + (cell_size + indent) * num))
 

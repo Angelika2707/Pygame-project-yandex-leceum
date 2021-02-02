@@ -16,6 +16,7 @@ if __name__ == '__main__':
             init_project.main_game.all_sprites.update(event)
         init_project.all_sprites2.update(event)
         init_project.main_game.draw_level()
+        init_project.inventory.update()
         init_project.clock.tick(fps)
         pygame.display.flip()
     pygame.quit()

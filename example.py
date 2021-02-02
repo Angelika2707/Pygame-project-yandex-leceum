@@ -14,13 +14,12 @@ if __name__ == '__main__':
 
     parameters1 = {
         'name': 'music',
-        'images': ['креветка.png'],
+        'images': ['key.png'],
         'x': 200,
         'y': 10,
         'inventory': inventory,
         'all_sprites': all_sprites2,
     }
-
 
     item1 = Item(**parameters1)
 
