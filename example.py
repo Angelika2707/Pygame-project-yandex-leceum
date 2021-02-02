@@ -1,30 +1,28 @@
 import pygame
-from AllClasses import BaseLevelClass, Spider
-
+from AllClasses import BaseLevelClass, Item, Inventory
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 1500, 700
+    size = width, height = 1000, 700
     screen = pygame.display.set_mode(size)
     running = True
     fps = 60
     clock = pygame.time.Clock()
 
     all_sprites2 = pygame.sprite.Group()
-    inventory = []
+    inventory = Inventory(screen)
 
-    parameters = {
+    parameters1 = {
         'name': 'music',
         'images': ['креветка.png'],
-        'x': 10,
+        'x': 200,
         'y': 10,
         'inventory': inventory,
         'all_sprites': all_sprites2,
-        'screen': screen,
-        'clock': clock
     }
 
-    item1 = Spider(**parameters)
+
+    item1 = Item(**parameters1)
 
     base_level_class = BaseLevelClass(wallpapers=['start_level_1.png', 'level_2.png'],
                                       fon_music=['piano_fon.mp3'],
@@ -39,10 +37,11 @@ if __name__ == '__main__':
                 running = False
 
             base_level_class.all_sprites.update(event)
-        print(inventory)
+
         all_sprites2.update(event)
 
         base_level_class.draw_level()
+        inventory.update()
         clock.tick(fps)
         pygame.display.flip()
     pygame.quit()
