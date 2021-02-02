@@ -644,3 +644,4 @@ class Inventory(pygame.sprite.Sprite):
 
     def __repr__(self):
         return '|' + '; '.join(str(i.name) for i in self.inventory) + '|'
+#
