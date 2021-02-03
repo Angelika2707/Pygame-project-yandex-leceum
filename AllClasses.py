@@ -556,7 +556,7 @@ class Safe(Sprite):
                       'cейф_пароль_4.png', 'сейф_окрыт.png', 'сейф_открытый.png']
         self.buttons = buttons
         self.images = images
-        self.code = [1, 2, 3, 4]
+        self.code = [5, 4, 1, 9]
         self.current_code = []
         self.safe = safe
         self.can = True

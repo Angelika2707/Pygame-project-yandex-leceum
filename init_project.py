@@ -78,8 +78,8 @@ inventory = Inventory(screen)
 parameters1 = {
     'name': 'music',
     'images': ['key.png'],
-    'x': 400,
-    'y': 200,
+    'x': -400,
+    'y': -200,
     'inventory': inventory,
     'all_sprites': all_sprites2,
     'ind': 55
@@ -111,7 +111,7 @@ door2 = AnimatedButton(['door_number2.png'],
                        700, 310, print, None, True, 6)
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
-knife = AnimatedButton(['knife2.png'],
+knife = AnimatedButton(['knigh3.png'],
                        450, 750, print, None)
 
 end = AnimatedButton(['экран.png'], 0, 0, print, 'button_sound.ogg', True, 17)
