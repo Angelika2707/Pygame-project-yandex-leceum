@@ -449,7 +449,7 @@ class Graph(pygame.sprite.Sprite):
 
     def start_game(self, screen, fps, clock):
         result = None
-        image = self.load_image('spider_background.jpg')
+        image = self.load_image('spider_fon.jpg')
         while result == None:
             screen.fill((255, 255, 255))
             screen.blit(image, (0,0))
