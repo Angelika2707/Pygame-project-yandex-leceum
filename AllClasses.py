@@ -279,7 +279,7 @@ class Node:
             return image
 
     def render(self, screen):
-        pygame.draw.ellipse(screen, (50, 50, 50), ((self.x - 7, self.y - 7), (14, 14)))
+        pygame.draw.ellipse(screen, (200, 200, 200), ((self.x - 32, self.y - 32), (64, 64)))
         if self.item:
             image = self.load_image()
             size = image.get_size()
@@ -437,10 +437,22 @@ class Graph(pygame.sprite.Sprite):
             way = get_way(end, lenghts[end], lenghts)[::-1] + [end]
         return bool(way), way if way else []
 
+    def load_image(self, name):
+        # удалить на релизе
+        fullname = os.path.join('Images', name)
+        if not os.path.isfile(fullname):
+            print(f"Файл с изображением '{fullname}' не найден")
+            sys.exit()
+        #  выше блок кода
+        image = pygame.image.load(fullname)
+        return image
+
     def start_game(self, screen, fps, clock):
         result = None
+        image = self.load_image('spider_background.jpg')
         while result == None:
             screen.fill((255, 255, 255))
+            screen.blit(image, (0,0))
             self.render(screen)
 
             for event in pygame.event.get():
@@ -542,8 +554,6 @@ class Spider(AnimatedButton):
                                     self.inventory.append(self.name)
                                     while self in self.all_sprites:
                                         self.all_sprites.remove(self)
-                                    for i in self.all_sprites:
-                                        print()
                                     self.kill()
                                     time.sleep(1)
 
