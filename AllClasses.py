@@ -134,23 +134,26 @@ class BaseLevelClass:
         self.objs_on_level = objs_on_level
         self.num_of_screen = 0
         self.display = display
-        self.start_background_music()
         self.n = 1
         self.transform = transform
+        fullname = os.path.join('Music', self.fon_music[0])
+        self.mus = pygame.mixer.Sound(fullname)
+        self.music_can = True
 
     def start_background_music(self):
-        fullname = os.path.join('Music', self.fon_music[0])
-        mus = pygame.mixer.Sound(fullname)
-        mus.set_volume(0.25)
-        mus.set_volume(0.25)
-        mus.play(-1)
+        self.mus.set_volume(0.25)
+        self.mus.set_volume(0.25)
+        self.mus.play(-1)
+
+    def stop_background_music(self):
+        self.mus.stop()
 
     def draw_level(self):
         self.all_sprites = pygame.sprite.Group()
         background = os.path.join('Images', self.wallpapers[self.num_of_screen])
         image = pygame.image.load(background)
         if self.transform:
-            image1 = pygame.transform.scale(image, (1366, 768))
+            image1 = pygame.transform.scale(image, (1920, 1080))
         else:
             image1 = image
         background_rect = image1.get_rect()
@@ -229,12 +232,14 @@ class DialogSprite(Sprite):
 
 
 class Item(AnimatedButton):
-    def __init__(self, name, images, x, y, inventory, all_sprites, sound=None, level=0):
+    def __init__(self, name, images, x, y, inventory, all_sprites, function=None, ind=0, sound=None, level=0):
         super().__init__(images, x, y, None, sound=None, go_to=False, level=0)
         self.name = name
         self.inventory = inventory
         self.all_sprites = all_sprites
         self.all_sprites.add(self)
+        self.function = function
+        self.ind = ind
 
     def update(self, *args):
         super().update()
@@ -248,7 +253,8 @@ class Item(AnimatedButton):
                             if mouse[1] <= self.rect.y + self.rect.height:
                                 self.inventory.append(self)
                                 self.all_sprites.remove(self)
-                                # print(self.all_sprites)
+                                if self.function:
+                                    self.function(self.ind)
                                 self.kill()
 
     def __repr__(self):
@@ -543,17 +549,18 @@ class Spider(AnimatedButton):
 
 
 class Safe(Sprite):
-    def __init__(self, x, y, buttons, safe, images=None):
+    def __init__(self, x, y, buttons, safe, images=None, baze=None):
         if images is None:
             images = ['cейф_пароль_0.png', 'cейф_пароль_1.png', 'сейф_пароль_2.png',
                       'cейф_пароль_3.png',
                       'cейф_пароль_4.png', 'сейф_окрыт.png', 'сейф_открытый.png']
         self.buttons = buttons
         self.images = images
-        self.code = [1, 2, 3, 4]
+        self.code = [5, 4, 1, 9]
         self.current_code = []
         self.safe = safe
         self.can = True
+        self.baze = baze
         super().__init__(images, x, y)
 
     def update(self, *args):
@@ -562,10 +569,7 @@ class Safe(Sprite):
                 self.current_code = []
                 self.safe.img_count = 0
             elif self.current_code == self.code:
-                self.safe.images[0] = 'сейф_открытый.png'
-                self.safe.image = self.safe.load_image('сейф_открытый.png')
-                self.img_count = -2
-                self.can = False
+                self.baze.next_screen(16)
             else:
                 self.img_count = len(self.current_code)
         self.image = self.load_image(self.images[self.img_count])
@@ -580,13 +584,23 @@ class Safe(Sprite):
 
 
 class LevelManager:
-    def __init__(self, levels):
+    def __init__(self, levels, inits):
         self.levels = levels
         self.current_level = self.levels[0]
         self.level_count = 0
+        self.inits = inits
+        self.current_level.start_background_music()
+        self.can_music = self.current_level.music_can
+        print(self.can_music)
 
     def change_level(self):
+        self.current_level.mus.stop()
         self.level_count += 1
+        self.can_music = self.current_level.music_can
+        self.current_level = self.levels[self.level_count]
+        if self.can_music:
+            self.current_level.start_background_music()
+        self.init_project()
 
     def draw(self):
         self.current_level.draw_level()
@@ -594,6 +608,12 @@ class LevelManager:
     def init(self, l):
         for i in l:
             i.function = self.change_level
+
+    def init_project(self):
+        if self.level_count == 0:
+            self.inits[0]()
+        else:
+            self.inits[1]()
 
 
 class Inventory(pygame.sprite.Sprite):
@@ -621,18 +641,19 @@ class Inventory(pygame.sprite.Sprite):
     def update(self, *args, **kwargs):
         screen = self.screen
 
-        start_x, start_y = 500, 50
-        cell_size, indent = 200, 20
+        start_x, start_y = 1590, 220
+        cell_size, indent = 100, 23
 
         for num, object in enumerate(self.inventory):
             object: Item
             image = self.load_image(object.images[0])
-            size = image.get_size()
-            k = size[0]/size[1]
-            if size[0] > size[1]:
-                image = pygame.transform.scale(image, (cell_size, int(cell_size/k)))
-            else:
-                image = pygame.transform.scale(image, (int(cell_size / k), cell_size))
+            # size = image.get_size()
+            image = pygame.transform.scale(image, (80, 80))
+            # k = size[0] / size[1]
+            # if size[0] > size[1]:
+            #     image = pygame.transform.scale(image, (cell_size, int(cell_size / k)))
+            # else:
+            #     image = pygame.transform.scale(image, (int(cell_size / k), cell_size))
 
             screen.blit(image, (start_x, start_y + (cell_size + indent) * num))
 

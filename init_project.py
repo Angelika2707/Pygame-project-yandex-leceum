@@ -1,7 +1,14 @@
-from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass
+from AllClasses import AnimatedButton, Safe, DialogSprite, Spider, BaseLevelClass, Inventory, Item
 import pygame
 
 pygame.init()
+
+
+def open_safe_second():
+    if inventory.inventory:
+        main_game.wallpapers[14] = 'safe_second_open.png'
+        main_game.wallpapers[13] = 'км3_open.png'
+        inventory.inventory.clear()
 
 
 size = width, height = 1920, 1080
@@ -25,30 +32,62 @@ button_right1 = AnimatedButton(['button_left.png'],
                                1600, 550, print, 'button_sound.ogg', True, 1)
 button_right2 = AnimatedButton(['button_right.png'],
                                300, 550, print, 'button_sound.ogg', True, 0)
+button_left_level_2 = AnimatedButton(['button_left.png'],
+                                     1480, 550, print, 'button_sound.ogg', True, 13)
+button_right_level_3 = AnimatedButton(['button_right.png'],
+                                      300, 550, print, 'button_sound.ogg', True, 8)
 button_dowm = AnimatedButton(['button_down.png'],
                              900, 900, print, 'button_sound.ogg', True, 0)
+safe_second_tab = AnimatedButton(['safe_second_tab.png'],
+                                 810, 510, print, None, True, 14)
 button_dowm2 = AnimatedButton(['button_down.png'],
                               920, 900, print, 'button_sound.ogg', True, 4)
 button_dowm3 = AnimatedButton(['button_down.png'],
                               920, 900, print, 'button_sound.ogg', True, 7)
 button_dowm4 = AnimatedButton(['button_down.png'],
                               870, 900, print, 'button_sound.ogg', True, 7)
+button_dowm5 = AnimatedButton(['button_down.png'],
+                              870, 890, print, 'button_sound.ogg', True, 13)
+button_dowm6 = AnimatedButton(['button_down.png'],
+                              870, 890, print, 'button_sound.ogg', True, 8)
 button_go_to_lift = AnimatedButton(['go_to_lift.png'],
                                    850, 550, print, 'button_sound.ogg', True, 2)
 buttons_in_lift = AnimatedButton(['buttons_in_lift.png'],
                                  1480, 480, print, 'button_sound.ogg', True, 3)
 buttons_hall = AnimatedButton(['экран.png'],
                               0, 0, print, 'button_sound.ogg', True, 4)
+butter_fly = AnimatedButton(['бабочки.png'],
+                            480, 420, print, 'button_sound.ogg', True, 15)
+first_panel = AnimatedButton(['экран.png'],
+                             0, 0, print, 'button_sound.ogg', True, 0)
 door3 = AnimatedButton(['door_number3.png'],
                        900, 430, print, None, True, 5)
 door3_dil = AnimatedButton(['door_dialog_tab.png'],
-                           720, 200, print, None, True, 22)
+                           720, 200, print, 'knok.mp3', True, 22)
 door_go_to_level = AnimatedButton(['door_dialog_tab.png'],
                                   720, 200, print, None, True, 7)
 button_right_level = AnimatedButton(['button_left.png'],
                                     1480, 550, print, 'button_sound.ogg', True, 8)
 button_left_level = AnimatedButton(['button_right.png'],
                                    300, 550, print, 'button_sound.ogg', True, 7)
+safe_second = AnimatedButton(['safe_tab.png'],
+                             600, 360, open_safe_second, 'button_sound.ogg')
+#
+inventory = Inventory(screen)
+
+parameters1 = {
+    'name': 'music',
+    'images': ['key.png'],
+    'x': -400,
+    'y': -200,
+    'inventory': inventory,
+    'all_sprites': all_sprites2,
+    'ind': 55
+}
+
+item1 = Item(**parameters1)
+#
+
 
 door_exit_level = AnimatedButton(['door_exit_level.png'], 750, 270, print, 'button_sound.ogg', True, 35)
 button1 = AnimatedButton(['кнопка_сейфа.png'], 700, 450, print, 'safe_click.wav', True, 1)
@@ -72,12 +111,13 @@ door2 = AnimatedButton(['door_number2.png'],
                        700, 310, print, None, True, 6)
 door1 = AnimatedButton(['door_number2.png'],
                        1150, 310, print, None, True, 5)
+knife = AnimatedButton(['knigh3.png'],
+                       450, 750, print, None)
 
-#spider = AnimatedButton(['паутина.png'],
-   #                     1320, 130, print, None)
+end = AnimatedButton(['экран.png'], 0, 0, print, 'button_sound.ogg', True, 17)
 
-spider = Spider(name = 'тфьу', images = ['паутина.png'], x = 1320, y = 130, inventory = [],
-                all_sprites=all_sprites2, screen=screen, clock= clock)
+spider = Spider(name=item1, images=['паутина.png'], x=1320, y=130, inventory=inventory,
+                all_sprites=all_sprites2, screen=screen, clock=clock)
 
 button_dialog_door = DialogSprite(['door_dialog.png'], 500, 100, print, door3_dil, 22)
 dialog_door_level = DialogSprite(['room_dialog.png'], 400, 100, print, door_exit_level, 35)
@@ -88,10 +128,10 @@ bird_dialog = DialogSprite(['bird_dialog.png'], 500, 100, print, bird, 11)
 turkey_dialog = DialogSprite(['turkey_dialog.png'], 500, 100, print, turkey, 12)
 pig_dialog = DialogSprite(['pig_dialog.png'], 500, 100, print, pig, 13)
 
-
 main_game = BaseLevelClass(
     ['start_level_1.png', 'level_2.png', 'lift_hall.png', 'lift_rooms.png', 'rooms.png', 'door.png', 'door.png',
-     'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png'],
+     'км1.png', 'км2_2.png', 'page1.png', 'сейф_окно.png', 'подсказка_2_page.png', 'inf2.png', 'км3.png',
+     'safe_second.png', 'км2_,бабочки.png', 'сейф_окно_открыто.png', 'end.png'],
     ['piano_fon.mp3'],
     [[rabbit, 0], [deer, 0], [pig, 1], [button_right1, 0], [button_right2, 1],
      [pigion, 0], [turkey, 1], [bird, 1], [rabbit_dialog, -1], [deer_dialog, -1],
@@ -101,11 +141,17 @@ main_game = BaseLevelClass(
      [door_go_to_level, 6], [button_right_level, 7], [button_left_level, 8], [page_room_tab, 7], [button_dowm3, 9],
      [safe, 7], [button_dowm4, 10], [help_page, 7], [button_dowm4, 11], [door_exit_level, 8],
      [dialog_door_level, -1], [safe_window, 10], [button1, 10], [button2, 10], [button3, 10], [button4, 10],
-     [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8]],
+     [button5, 10], [button6, 10], [button7, 10], [button8, 10], [button9, 10], [button0, 10], [spider, 8],
+     [first_panel, 12], [button_left_level_2, 8], [button_right_level_3, 13], [safe_second_tab, 13],
+     [button_dowm5, 14], [butter_fly, 8], [button_dowm6, 15], [safe_second, 14], [knife, 16], [end, 16]],
     screen)
+main_game.num_of_screen = 12
 
 
 def init():
+    end.function = main_game.next_screen
+    safe_window.baze = main_game
+    item1.function = main_game.change_screen_off
     all_sprites2.add(dialog_door_level)
     all_sprites2.add(rabbit_dialog)
     all_sprites2.add(button_dialog_door)
@@ -124,15 +170,23 @@ def init():
     pig_dialog.function = main_game.change_screen_off
     button_right1.function = main_game.next_screen
     button_right2.function = main_game.next_screen
+    first_panel.function = main_game.next_screen
     button_right_level.function = main_game.next_screen
     button_left_level.function = main_game.next_screen
     safe.function = main_game.next_screen
+    button_left_level_2.function = main_game.next_screen
+    button_right_level_3.function = main_game.next_screen
     button_dowm.function = main_game.next_screen
     button_dowm2.function = main_game.next_screen
     button_dowm3.function = main_game.next_screen
     button_dowm4.function = main_game.next_screen
+    button_dowm5.function = main_game.next_screen
+    button_dowm6.function = main_game.next_screen
     page_room_tab.function = main_game.next_screen
     help_page.function = main_game.next_screen
+    butter_fly.function = main_game.next_screen
+    safe_second_tab.function = main_game.next_screen
+    button_dowm.function = main_game.next_screen
     door3.function = main_game.next_screen
     door2.function = main_game.next_screen
     door1.function = main_game.next_screen
@@ -148,4 +202,3 @@ def init():
     bird.function = main_game.change_screen_on
     door3_dil.function = main_game.change_screen_on
     door_exit_level.function = main_game.change_screen_on
-
