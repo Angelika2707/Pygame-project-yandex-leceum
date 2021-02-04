@@ -452,7 +452,7 @@ class Graph(pygame.sprite.Sprite):
         image = self.load_image('spider_fon.jpg')
         while result == None:
             screen.fill((255, 255, 255))
-            screen.blit(image, (0,0))
+            screen.blit(image, (0, 0))
             self.render(screen)
 
             for event in pygame.event.get():
@@ -511,6 +511,7 @@ class Spider(AnimatedButton):
         self.screen = screen
         self.clock = clock
         self.all_sprites.add(self)
+        self.key = True
 
     def create_graph(self):
         sx, sy = 450, 550  # координаты начала
@@ -551,11 +552,13 @@ class Spider(AnimatedButton):
                         if mouse[0] <= self.rect.x + self.rect.width:
                             if mouse[1] <= self.rect.y + self.rect.height:
                                 if self.create_graph().start_game(self.screen, 60, self.clock):
-                                    self.inventory.append(self.name)
-                                    while self in self.all_sprites:
-                                        self.all_sprites.remove(self)
-                                    self.kill()
-                                    time.sleep(1)
+                                    if self.key:
+                                        self.inventory.append(self.name)
+                                        self.key = False
+                                        while self in self.all_sprites:
+                                            self.all_sprites.remove(self)
+                                        self.kill()
+                                        time.sleep(1)
 
 
 class Safe(Sprite):
